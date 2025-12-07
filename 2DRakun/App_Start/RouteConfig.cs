@@ -14,8 +14,14 @@ namespace _2DRakun
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "LoginRoute",
+                url: "{action}/{name}/{id}",
+                defaults: new { controller = "Home", action = "Login", id = UrlParameter.Optional }
+            );
+
+            routes.MapRoute(
                 name: "Default",
-                url: "{controller}/{action}/{id}",
+                url: "{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }
