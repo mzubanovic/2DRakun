@@ -1,7 +1,7 @@
 ﻿using System.Configuration;
 using System.Data.SqlClient;
 
-namespace _2DRakun.Code
+namespace _2DRakun
 {
 
     public static class DbHelper

@@ -31,6 +31,10 @@ namespace _2DRakun.Models
         [Required, EmailAddress]
         public string Email { get; set; }
 
+        public string Username { get; set; }
+
+        public DateTime DateCreated { get; set; }
+
         [Required]
         public string PasswordHash { get; set; }
     }
