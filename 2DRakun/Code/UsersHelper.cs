@@ -6,15 +6,15 @@ namespace _2DRakun
 {
     public class UsersHelper
     {
-        public User GetUserById(int id)
+        public Users GetUserById(int id)
         {
             using (var conn = DbHelper.GetOpenConnection())
             {
-                return conn.Get<User>(id);  
+                return conn.Get<Users>(id);  
             }
         }
 
-        public int UpdateUser(User user)
+        public int UpdateUser(Users user)
         {
             using (var conn = DbHelper.GetOpenConnection())
             {
@@ -26,12 +26,12 @@ namespace _2DRakun
         {
             using (var conn = DbHelper.GetOpenConnection())
             {
-                var user = new User { Id = id };
+                var user = new Users { Id = id };
                 return conn.Delete(user);  
             }
         }
 
-        public static int CreateUser(User user)
+        public static int CreateUser(Users user)
         {
             using (var conn = DbHelper.GetOpenConnection())
             {
@@ -44,13 +44,13 @@ namespace _2DRakun
         /// </summary>
         /// <param name="email">The email address of the user to retrieve.</param>
         /// <returns>
-        /// A <see cref="User"/> object if a user with the specified email exists; 
+        /// A <see cref="Users"/> object if a user with the specified email exists; 
         /// otherwise, <c>null</c>.
         /// </returns>
-        public static User GetUserByEmail(string email) {
+        public static Users GetUserByEmail(string email) {
             using (var conn = DbHelper.GetOpenConnection())
             {
-                return (User)conn.QueryFirstOrDefault("SELECT top(1) * FROM USERS WHERE email = @email" , new { email});
+                return (Users)conn.QueryFirstOrDefault("SELECT top(1) * FROM USERS WHERE email = @email" , new { email});
             }
         }
     }

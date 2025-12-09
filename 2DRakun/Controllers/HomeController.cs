@@ -65,14 +65,24 @@ namespace _2DRakun.Controllers
         [HttpGet]
         public ActionResult Register()
         {
-            return View();
+            return View(new UserViewModel());
         }
 
         [HttpPost]
         public ActionResult Register(UserViewModel model)
         {
-            if (!ModelState.IsValid)
+            // Basic backend checks
+            if (string.IsNullOrWhiteSpace(model.Password))
+            {
+                ModelState.AddModelError("", "Lozinke se ne podudaraju.");
                 return View(model);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Email))
+            {
+                ModelState.AddModelError("", "Email je obavezan.");
+                return View(model);
+            }
 
             var existingUser = UsersHelper.GetUserByEmail(model.Email);
             if (existingUser != null)
@@ -81,12 +91,18 @@ namespace _2DRakun.Controllers
                 return View(model);
             }
 
-            var user = new User
+            var user = new Users
             {
-                Username = model.Username,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                CompanyName = model.CompanyName,
+                Oib = model.Oib,
+                BankName = model.BankName,
+                IBAN = model.IBAN,
                 Email = model.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
-                DateCreated = DateTime.Now
+                Username = model.Username,
+                DateCreated = DateTime.Now,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password)
             };
 
             int newUserId = UsersHelper.CreateUser(user);

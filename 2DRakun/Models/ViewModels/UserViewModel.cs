@@ -8,22 +8,15 @@ namespace _2DRakun.Models.ViewModels
 {
     public class UserViewModel
     {
-        [Required(ErrorMessage = "Korisničko ime je obavezno.")]
-        [StringLength(50, ErrorMessage = "Korisničko ime ne može biti duže od 50 znakova.")]
-        public string Username { get; set; }
-
-        [Required(ErrorMessage = "Email je obavezan.")]
-        [EmailAddress(ErrorMessage = "Unesite ispravnu email adresu.")]
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string CompanyName { get; set; }
+        public string Oib { get; set; }
+        public string BankName { get; set; }
+        public string IBAN { get; set; }
         public string Email { get; set; }
-
-        [Required(ErrorMessage = "Lozinka je obavezna.")]
-        [DataType(DataType.Password)]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Lozinka mora imati najmanje 6 znakova.")]
+        public string Username { get; set; }
         public string Password { get; set; }
-
-        [Required(ErrorMessage = "Potvrda lozinke je obavezna.")]
-        [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Lozinke se ne podudaraju.")]
-        public string ConfirmPassword { get; set; }
     }
+
 }

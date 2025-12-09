@@ -6,7 +6,7 @@ using System.Web;
 
 namespace _2DRakun.Models
 {
-    public class User
+    public class Users
     {
         public int Id { get; set; }
 

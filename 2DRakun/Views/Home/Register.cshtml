@@ -1,0 +1,63 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Registracija korisnika";
+}
+
+
+<div class="form-register shadow-sm rounded bg-white p-4">
+    <h2 class="text-center mb-4">Registracija korisnika</h2>
+
+    <form method="post" action="@Url.Action("Register", "Home")" novalidate>
+        <div class="mb-3">
+            <label for="FirstName" class="form-label">Ime</label>
+            <input type="text" id="FirstName" name="FirstName" class="form-control" placeholder="Unesite ime" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="LastName" class="form-label">Prezime</label>
+            <input type="text" id="LastName" name="LastName" class="form-control" placeholder="Unesite prezime" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="CompanyName" class="form-label">Naziv firme (nije obavezno)</label>
+            <input type="text" id="CompanyName" name="CompanyName" class="form-control" placeholder="Naziv firme" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Oib" class="form-label">OIB</label>
+            <input type="text" id="Oib" name="Oib" class="form-control" placeholder="11 znamenki" maxlength="11" pattern="\d{11}" title="OIB mora sadržavati točno 11 znamenki" />
+        </div>
+
+        <div class="mb-3">
+            <label for="BankName" class="form-label">Naziv banke</label>
+            <input type="text" id="BankName" name="BankName" class="form-control" placeholder="Naziv banke" />
+        </div>
+
+        <div class="mb-3">
+            <label for="IBAN" class="form-label">IBAN</label>
+            <input type="text" id="IBAN" name="IBAN" class="form-control" placeholder="IBAN broj" maxlength="34" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Email" class="form-label">Email adresa</label>
+            <input type="email" id="Email" name="Email" class="form-control" placeholder="Unesite email" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="Username" class="form-label">Korisničko ime</label>
+            <input type="text" id="Username" name="Username" class="form-control" placeholder="Korisničko ime" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="Password" class="form-label">Lozinka</label>
+            <input type="password" id="Password" name="Password" class="form-control" placeholder="Lozinka" required minlength="6" />
+        </div>
+
+        <div class="mb-3">
+            <label for="ConfirmPassword" class="form-label">Potvrdi lozinku</label>
+            <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" placeholder="Potvrdi lozinku" required minlength="6" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Registriraj se</button>
+    </form>
+</div>
