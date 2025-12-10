@@ -246,6 +246,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Code\AuthHelper.cs" />
     <Compile Include="Code\DbHelper.cs" />
     <Compile Include="Code\UsersHelper.cs" />
     <Compile Include="Controllers\HomeController.cs" />

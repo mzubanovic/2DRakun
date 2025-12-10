@@ -1,8 +1,10 @@
-﻿using _2DRakun.Models;
+﻿using _2DRakun.Code;
+using _2DRakun.Models;
 using _2DRakun.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
@@ -21,10 +23,23 @@ namespace _2DRakun.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(string email, string password)
         {
-            //validacija
-            //logiranje
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                ViewBag.Error = "Unesite email i lozinku.";
+                return View();
+            }
 
-            return View();
+            var user = AuthHelper.ValidateUser(email, password);
+
+            if (user == null)
+            {
+                ViewBag.Error = "Neispravan email ili lozinka.";
+                return View();
+            }
+
+            AuthHelper.SignIn(HttpContext, user);
+
+            return RedirectToAction("Index", "Home");
         }
 
         private bool VerifyPassword(string plainPassword, string storedHash)
@@ -35,7 +50,9 @@ namespace _2DRakun.Controllers
 
         public ActionResult Logout()
         {
-            Session.Clear();
+            Session.Clear();          
+            Session.Abandon();         
+            Session.RemoveAll();
             return RedirectToAction("Login");
         }
 
@@ -45,6 +62,13 @@ namespace _2DRakun.Controllers
                 return RedirectToAction("Login");
 
             ViewBag.UserName = Session["UserName"];
+            return View();
+        }
+
+        public ActionResult NewInvoice()
+        {
+            ViewBag.Message = "Your application description page.";
+
             return View();
         }
 
@@ -69,6 +93,7 @@ namespace _2DRakun.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Register(UserViewModel model)
         {
             // Basic backend checks

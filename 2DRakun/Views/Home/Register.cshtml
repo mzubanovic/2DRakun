@@ -8,6 +8,7 @@
     <h2 class="text-center mb-4">Registracija korisnika</h2>
 
     <form method="post" action="@Url.Action("Register", "Home")" novalidate>
+        @Html.AntiForgeryToken()
         <div class="mb-3">
             <label for="FirstName" class="form-label">Ime</label>
             <input type="text" id="FirstName" name="FirstName" class="form-control" placeholder="Unesite ime" required />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,10 +11,10 @@ namespace _2DRakun.Models
     {
         public int Id { get; set; }
 
-        [Required, StringLength(50)]
+        [Dapper.Required, StringLength(50)]
         public string FirstName { get; set; }
 
-        [Required, StringLength(50)]
+        [Dapper.Required, StringLength(50)]
         public string LastName { get; set; }
 
         [StringLength(100)]
@@ -28,14 +29,14 @@ namespace _2DRakun.Models
         [StringLength(34)] // Max length for IBAN
         public string IBAN { get; set; }
 
-        [Required, EmailAddress]
+        [Dapper.Required, EmailAddress]
         public string Email { get; set; }
 
         public string Username { get; set; }
 
         public DateTime DateCreated { get; set; }
 
-        [Required]
+        [Dapper.Required]
         public string PasswordHash { get; set; }
     }
 }

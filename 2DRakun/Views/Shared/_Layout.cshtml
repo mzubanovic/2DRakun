@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using _2DRakun.Code
+
+
+<!DOCTYPE html>
 <html lang="hr">
 <head>
     <meta charset="utf-8" />
@@ -14,6 +17,12 @@
     @RenderSection("Styles", required: false)
 </head>
 <body>
+
+    @{
+        var username = AuthHelper.GetCurrentUsername(Context);
+        bool isUserLoggedIn = !string.IsNullOrEmpty(username);
+    }
+
     <header class="mb-4">
         <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
             <div class="container">
@@ -25,15 +34,31 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Login", "Home")">Prijava</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Register", "Home")">Registracija</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Profile", "Home")">Račun</a>
-                        </li>
+                        @if (!isUserLoggedIn)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Login", "Home")">Prijava</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Register", "Home")">Registracija</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Faktura", "Home")">Faktura</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <strong>@username</strong>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="@Url.Action("Profile", "Home")">Profil</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Logout", "Home")">Odjava</a></li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

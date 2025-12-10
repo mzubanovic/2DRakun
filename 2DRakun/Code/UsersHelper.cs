@@ -1,6 +1,7 @@
 ﻿using _2DRakun.Models;
 using Dapper;
 using System;
+using System.Web;
 
 namespace _2DRakun
 {
@@ -50,8 +51,9 @@ namespace _2DRakun
         public static Users GetUserByEmail(string email) {
             using (var conn = DbHelper.GetOpenConnection())
             {
-                return (Users)conn.QueryFirstOrDefault("SELECT top(1) * FROM USERS WHERE email = @email" , new { email});
+                return conn.QueryFirstOrDefault<Users>("SELECT top(1) * FROM USERS WHERE email = @email" , new { email});
             }
         }
+
     }
 }
