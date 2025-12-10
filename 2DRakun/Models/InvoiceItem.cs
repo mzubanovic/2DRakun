@@ -17,8 +17,8 @@ namespace _2DRakun.Models
         public decimal Price { get; set; }
         public decimal Amount => Quantity * Price;
         [NotMapped]
-        public string Price_print => Price.ToString("F2", CultureInfo.GetCultureInfo("hr-HR")) + " €";
+        public string Price_print => Price.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
         [NotMapped]
-        public string Amount_print => Amount.ToString("F2", CultureInfo.GetCultureInfo("hr-HR")) + " €";
+        public string Amount_print => Amount.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
     }
 }
