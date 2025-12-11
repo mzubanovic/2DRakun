@@ -1,0 +1,134 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Kreiranje računa";
+}
+
+<div class="invoice-create shadow-sm rounded bg-white p-4">
+    <h2 class="text-center mb-4">Novi račun</h2>
+
+    <form method="post" action="@Url.Action("CreateInvoice", "Home")" novalidate>
+        @Html.AntiForgeryToken()
+
+        <h3>Podaci o kupcu</h3>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="Customer" class="form-label">Kupac</label>
+                <select id="Customer" name="Customer" class="form-select" required>
+                    <option value="" selected disabled>Odaberite kupca</option>
+                    <option value="3">Mario Tomić</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="CustomerOIB" class="form-label">OIB</label>
+                <input type="text" id="CustomerOIB" name="CustomerOIB" class="form-control" maxlength="11" pattern="\d{11}" title="OIB mora sadržavati točno 11 znamenki" required />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="CustomerName" class="form-label">Ime i prezime / Naziv</label>
+                <input type="text" id="CustomerName" name="CustomerName" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label for="Street" class="form-label">Ulica i broj</label>
+                <input type="text" id="Street" name="Street" class="form-control" required />
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label for="PostalCode" class="form-label">Poštanski broj</label>
+                <input type="text" id="PostalCode" name="PostalCode" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label for="City" class="form-label">Mjesto</label>
+                <input type="text" id="City" name="City" class="form-control" required />
+            </div>
+
+        </div>
+
+        <h3>Detalji računa</h3>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="PdfFilePath" class="form-label">PDF putanja (samo za stare račune)</label>
+                <input type="text" id="PdfFilePath" name="PdfFilePath" class="form-control" placeholder="../invoices/2025/račun123.pdf" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-2">
+                <label for="Valuta" class="form-label">Valuta / broj dana</label>
+                <input type="number" id="Valuta" name="Valuta" class="form-control" required placeholder="15" />
+            </div>
+            <div class="col-md-5">
+                <label for="CreatedBy" class="form-label">Račun izradio</label>
+                <input type="text" id="CreatedBy" name="CreatedBy" class="form-control" required />
+            </div>
+            <div class="col-md-5">
+                <label for="Cijena_Slovima" class="form-label">Cijena slovima</label>
+                <input type="text" id="Cijena_Slovima" name="Cijena_Slovima" class="form-control" required />
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="Napomena" class="form-label">Napomena</label>
+            <textarea id="Napomena" name="Napomena" rows="3" class="form-control"></textarea>
+        </div>
+
+        <hr />
+
+        <h4 class="mb-3">Stavke računa</h4>
+
+        <table class="table table-bordered" id="itemsTable">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 50%;">Opis</th>
+                    <th style="width: 15%;">Jedinica</th>
+                    <th style="width: 15%;">Količina</th>
+                    <th style="width: 15%;">Cijena</th>
+                    <th style="width: 5%;"></th>
+                </tr>
+            </thead>
+            <tbody id="itemsBody">
+                <!-- Rows će se dodavati dinamički -->
+            </tbody>
+        </table>
+
+        <button type="button" class="btn btn-secondary mb-4" id="addItemBtn">Dodaj stavku</button>
+
+        <button type="submit" class="btn btn-primary">Spremi račun</button>
+    </form>
+</div>
+
+<script>
+    let itemIndex = 0;
+
+    document.getElementById("addItemBtn").addEventListener("click", function () {
+        const body = document.getElementById("itemsBody");
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>
+                <input type="text" name="Items[${itemIndex}].Description" class="form-control" required />
+            </td>
+            <td>
+                <input type="text" name="Items[${itemIndex}].Unit" class="form-control" placeholder="kom, kg..." required />
+            </td>
+            <td>
+                <input type="number" step="0.01" name="Items[${itemIndex}].Quantity" class="form-control" required />
+            </td>
+            <td>
+                <input type="number" step="0.01" name="Items[${itemIndex}].Price" class="form-control" required />
+            </td>
+            <td class="text-center">
+                <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">X</button>
+            </td>
+        `;
+
+        body.appendChild(row);
+        itemIndex++;
+    });
+</script>

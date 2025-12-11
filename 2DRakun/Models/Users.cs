@@ -36,6 +36,9 @@ namespace _2DRakun.Models
 
         public DateTime DateCreated { get; set; }
 
+        [NotMapped]
+        public int PaymentTerm => 15; //valuta
+
         [Dapper.Required]
         public string PasswordHash { get; set; }
     }

@@ -15,7 +15,7 @@ namespace _2DRakun.Models
         public string Unit { get; set; }
         public decimal Quantity { get; set; }
         public decimal Price { get; set; }
-        public decimal Amount => Quantity * Price;
+        public decimal Amount => Math.Round(Quantity * Price, 2);
         [NotMapped]
         public string Price_print => Price.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
         [NotMapped]
