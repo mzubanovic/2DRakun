@@ -16,6 +16,7 @@ namespace _2DRakun.Models.ViewModels
         public string City { get; set; }
 
         //Račun
+        public string InvoiceNumber { get; set; }
         public string PdfFilePath { get; set; }
         public int Valuta { get; set; } = 0;
         public string CreatedBy { get; set; }

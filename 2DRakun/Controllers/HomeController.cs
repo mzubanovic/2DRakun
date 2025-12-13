@@ -89,6 +89,8 @@ namespace _2DRakun.Controllers
 
                 var amount = InvoiceHelper.CalculateAmount(items);
 
+                model.Napomena += "<br><br>Račun je izdan u elektroničkom obliku i važeći je bez pečata i potpisa";
+
                 var invoice = new Invoice
                 {
                     CustomerId = model.Customer,

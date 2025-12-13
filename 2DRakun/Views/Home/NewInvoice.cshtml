@@ -9,6 +9,13 @@
     <form method="post" action="@Url.Action("CreateInvoice", "Home")" novalidate>
         @Html.AntiForgeryToken()
 
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="InvoiceNumber" class="form-label">Broj računa</label>
+                <input type="text" id="InvoiceNumber" name="InvoiceNumber" class="form-control" required />
+            </div>
+        </div>
+
         <h3>Podaci o kupcu</h3>
 
         <div class="row mb-3">
