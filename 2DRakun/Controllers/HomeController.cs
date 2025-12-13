@@ -39,13 +39,7 @@ namespace _2DRakun.Controllers
 
             AuthHelper.SignIn(HttpContext, user);
 
-            return RedirectToAction("Index", "Home");
-        }
-
-        private bool VerifyPassword(string plainPassword, string storedHash)
-        {
-            // Za primjer, jednostavna provjera NE KORISTITI
-            return plainPassword == storedHash;
+            return RedirectToAction("NewInvoice", "Home");
         }
 
         public ActionResult Logout()

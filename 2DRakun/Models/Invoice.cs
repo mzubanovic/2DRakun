@@ -29,6 +29,7 @@ namespace _2DRakun.Models
         public string Currency { get; set; } = "EUR";
         public string PdfFilePath { get; set; }
         public string Napomena { get; set; }
+        [NotMapped]
         public List<InvoiceItem> Items { get; set; } = new List<InvoiceItem>();
 
     }
