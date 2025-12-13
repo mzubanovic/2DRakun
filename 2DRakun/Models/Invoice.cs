@@ -8,6 +8,7 @@ using System.Web;
 
 namespace _2DRakun.Models
 {
+    [Table("Invoices")]
     public class Invoice
     {
         public int Id { get; set; }
@@ -22,13 +23,13 @@ namespace _2DRakun.Models
         [NotMapped]
         public decimal Amount_saPDV => Math.Round(Amount + PDV, 2);
         [NotMapped]
-        public string Amount_saPDV_Print => Amount_saPDV.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
+        public string Amount_saPDV_Print => Amount_saPDV == 0 ? "" : Amount_saPDV.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
         [NotMapped]
-        public string Amount_Print => Amount.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
+        public string Amount_Print => Amount == 0 ? "" : Amount.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
         [NotMapped]
         public string Currency { get; set; } = "EUR";
         public string PdfFilePath { get; set; }
-        public string Napomena { get; set; }
+        public string Note { get; set; }
         [NotMapped]
         public List<InvoiceItem> Items { get; set; } = new List<InvoiceItem>();
 

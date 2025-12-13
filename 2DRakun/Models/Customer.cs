@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace _2DRakun.Models
 {
+    [Table("Customers")]
     public class Customer
     {
         public int Id { get; set; }

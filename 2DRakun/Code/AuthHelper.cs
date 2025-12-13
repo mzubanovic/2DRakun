@@ -8,7 +8,7 @@ namespace _2DRakun.Code
 {
     public class AuthHelper
     {
-        public static Users ValidateUser(string email, string password)
+        public static User ValidateUser(string email, string password)
         {
             var user = UsersHelper.GetUserByEmail(email);
 
@@ -21,7 +21,7 @@ namespace _2DRakun.Code
             return user;
         }
 
-        public static void SignIn(HttpContextBase context, Users user)
+        public static void SignIn(HttpContextBase context, User user)
         {
             context.Session["UserId"] = user.Id;
             context.Session["UserEmail"] = user.Email;
@@ -31,6 +31,12 @@ namespace _2DRakun.Code
         public static string GetCurrentUsername(HttpContextBase context)
         {
             return context.Session["UserName"] as string;
+        }
+
+        public static int GetCurrentUserId(HttpContextBase context)
+        {
+            var userId = context.Session["UserId"].ToString();
+            return IntHelper.TryParseInt(userId);
         }
     }
 }
