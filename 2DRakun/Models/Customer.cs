@@ -17,5 +17,6 @@ namespace _2DRakun.Models
         public string PostalCode { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
+        public string Oib { get; set; }
     }
 }

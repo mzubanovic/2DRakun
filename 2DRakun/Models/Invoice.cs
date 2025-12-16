@@ -12,7 +12,14 @@ namespace _2DRakun.Models
     public class Invoice
     {
         public int Id { get; set; }
-        public int CustomerId { get; set; } 
+        public int? CustomerId { get; set; }
+        public string CustomerName { get; set; }
+        public string CustomerStreet { get; set; }
+        public string CustomerCity { get; set; }
+        public string CustomerPostalCode { get; set; }
+        public string CustomerEmail { get; set; }
+        public string CustomerPhone { get; set; }
+        public string CustomerOib { get; set; }
         public string InvoiceNumber { get; set; }
         public int UserId { get; set; }      
         public DateTime IssueDate { get; set; }

@@ -7,21 +7,19 @@ namespace _2DRakun.Models.ViewModels
 {
     public class InvoiceViewModel
     {
-        //Kupac
-        public int Customer { get; set; }
-        public string CustomerOIB { get; set; }
+        public int? CustomerId { get; set; }
         public string CustomerName { get; set; }
-        public string Street { get; set; }
-        public string PostalCode { get; set; }
-        public string City { get; set; }
-
-        //Račun
-        public string InvoiceNumber { get; set; }
+        public string CustomerOib { get; set; }
+        public string CustomerStreet { get; set; }
+        public string CustomerCity { get; set; }
+        public string CustomerPostalCode { get; set; }
+        public string CustomerEmail { get; set; }
+        public string CustomerPhone { get; set; }
         public string PdfFilePath { get; set; }
-        public int Valuta { get; set; } = 0;
-        public string CreatedBy { get; set; }
-        public string Cijena_Slovima { get; set; }
-        public string Napomena { get; set; }
+        public string InvoiceNumber { get; set; }
+        public DateTime IssueDate { get; set; }
+
+        public string Note { get; set; }
 
         public List<InvoiceItemVM> Items { get; set; } = new List<InvoiceItemVM>();
     }
@@ -30,7 +28,7 @@ namespace _2DRakun.Models.ViewModels
     {
         public string Description { get; set; }
         public string Unit { get; set; }
-        public decimal? Quantity { get; set; } = 0;
-        public decimal? Price { get; set; } = 0;
+        public decimal? Quantity { get; set; }
+        public decimal? Price { get; set; } 
     }
 }

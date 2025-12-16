@@ -1,4 +1,5 @@
 ﻿using _2DRakun.Code;
+using _2DRakun.Helpers;
 using _2DRakun.Models;
 using _2DRakun.Models.ViewModels;
 using Dapper;
@@ -64,7 +65,8 @@ namespace _2DRakun.Controllers
         {
             ViewBag.Message = "Your application description page.";
 
-            return View();
+            var model = new InvoiceViewModel();  
+            return View(model);
         }
 
         [HttpPost]
@@ -77,39 +79,56 @@ namespace _2DRakun.Controllers
                 return View("NewInvoice", model);
             }
 
+            var cUserId = AuthHelper.GetCurrentUserId(HttpContext);
+
+            var nCustomer = new Customer
+            {
+                Name = model.CustomerName,
+                Email = model.CustomerEmail,
+                City = model.CustomerCity,
+                Street = model.CustomerStreet,
+                PostalCode = model.CustomerPostalCode,
+                Oib = model.CustomerOib,
+                Phone = model.CustomerPhone,
+                UserId = cUserId
+            };
+
+            int customerId = CustomerHelper.InsertOrUpdateCustomer(nCustomer);
+
+            var items = model.Items.Select(i => new InvoiceItem
+            {
+                Description = i.Description,
+                Unit = i.Unit,
+                Quantity = i.Quantity ?? 0,
+                Price = i.Price ?? 0m
+            }).ToList();
+
+            var amount = InvoiceHelper.CalculateAmount(items);
+
+            model.Note += "<br><br>Račun je izdan u elektroničkom obliku i važeći je bez pečata i potpisa";
+
+            var invoice = new Invoice
+            {
+                CustomerId = customerId,
+                UserId = cUserId,
+                IssueDate = DateTime.Now,
+                Amount = amount,
+                PdfFilePath = model.PdfFilePath,
+                Note = model.Note
+            };
+
             DbHelper.ExecuteInTransaction((conn, tran) =>
             {
-                var items = model.Items.Select(i => new InvoiceItem
-                {
-                    Description = i.Description,
-                    Unit = i.Unit,
-                    Quantity = i.Quantity ?? 0,
-                    Price = i.Price ?? 0m
-                }).ToList();
-
-                var amount = InvoiceHelper.CalculateAmount(items);
-
-                model.Napomena += "<br><br>Račun je izdan u elektroničkom obliku i važeći je bez pečata i potpisa";
-
-                var invoice = new Invoice
-                {
-                    CustomerId = model.Customer,
-                    UserId = AuthHelper.GetCurrentUserId(HttpContext),
-                    IssueDate = DateTime.Now,
-                    Amount = amount,
-                    PdfFilePath = model.PdfFilePath,
-                    Note = model.Napomena
-                };
-
-                var invoiceId = (int)conn.Insert(invoice, tran);
+                var invoiceId = InvoiceHelper.CreateInvoice(conn, tran, invoice);
 
                 foreach (var item in items)
                 {
                     item.InvoiceId = invoiceId;
-                    conn.Insert(item, tran);
+                    InvoiceHelper.CreateInvoiceItems(conn, tran, item);
                 }
             });
 
+            TempData["SuccessMessage"] = "Račun je uspješno spremljen.";
             return RedirectToAction("NewInvoice");
         }
 

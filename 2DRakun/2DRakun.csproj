@@ -247,6 +247,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Code\AuthHelper.cs" />
+    <Compile Include="Code\CustomerHelper.cs" />
     <Compile Include="Code\DbHelper.cs" />
     <Compile Include="Code\IntHelper.cs" />
     <Compile Include="Code\InvoiceHelper.cs" />
