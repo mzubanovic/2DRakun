@@ -20,6 +20,13 @@ namespace _2DRakun
             );
 
             routes.MapRoute(
+                  name: "ApiRoute",
+                  url: "api/{action}",
+                  defaults: new { controller = "Api", action = "Index", id = UrlParameter.Optional }
+                );
+
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }

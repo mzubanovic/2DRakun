@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using _2DRakun.Code;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,7 +26,10 @@ namespace _2DRakun.Models
         public DateTime IssueDate { get; set; }
         [NotMapped]
         public DateTime DueDate => IssueDate.AddDays(15);
-        public decimal Amount { get; set; }
+
+        [NotMapped]
+        public decimal Amount => InvoiceHelper.CalculateAmount(Items);
+
         [NotMapped]
         public decimal PDV => Math.Round(Amount * 0.25m, 2);
         [NotMapped]

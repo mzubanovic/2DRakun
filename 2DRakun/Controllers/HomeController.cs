@@ -113,7 +113,6 @@ namespace _2DRakun.Controllers
                 CustomerId = customerId,
                 UserId = cUserId,
                 IssueDate = DateTime.Now,
-                Amount = amount,
                 PdfFilePath = model.PdfFilePath,
                 Note = model.Note
             };

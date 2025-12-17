@@ -97,14 +97,6 @@
             </div>
         </div>
 
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="Cijena_Slovima" class="form-label">Cijena slovima</label>
-                <input type="text" id="Cijena_Slovima" name="Cijena_Slovima" class="form-control"
-                       value="" />
-            </div>
-        </div>
-
         <div class="mb-4">
             <label for="Note" class="form-label">Napomena</label>
             <textarea id="Note" name="Note" rows="3" class="form-control">@Model.Note</textarea>
@@ -152,6 +144,19 @@
         </table>
 
         <button type="button" class="btn btn-secondary mb-4" id="addItemBtn">Dodaj stavku</button>
+
+        <div class="mb-3">
+            <label><strong>Ukupno:</strong></label>
+            <span id="totalAmount">0,00 €</span>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="Cijena_Slovima" class="form-label">Cijena slovima</label>
+                <input type="text" id="Cijena_Slovima" name="Cijena_Slovima" class="form-control"
+                       value="" />
+            </div>
+        </div>
 
         <button type="submit" class="btn btn-primary">Spremi račun</button>
     </form>
@@ -207,5 +212,6 @@
             }
         });
 
-    </script>
+    </script>  
+
 }
