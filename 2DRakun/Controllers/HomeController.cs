@@ -66,6 +66,7 @@ namespace _2DRakun.Controllers
             ViewBag.Message = "Your application description page.";
 
             var model = new InvoiceViewModel();  
+            model.ExistingCustomers = CustomerHelper.GetCustomersForUser(AuthHelper.GetCurrentUserId(HttpContext));
             return View(model);
         }
 

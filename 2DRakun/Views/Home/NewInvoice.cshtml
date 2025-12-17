@@ -25,8 +25,20 @@
             <div class="col-md-6">
                 <label for="CustomerId" class="form-label">Kupac</label>
                 <select id="CustomerId" name="CustomerId" class="form-select" required>
-                    <option value="" selected disabled>Odaberite kupca</option>
-                    <option value="3" @(Model.CustomerId == 3 ? "selected" : "")>Mario Tomić</option>
+                    <option value="" selected>Odaberite kupca</option>
+                    @foreach (var customer in Model.ExistingCustomers)
+                    {
+                        <option value="@customer.Id"
+                                data-oib="@customer.Oib"
+                                data-name="@customer.Name"
+                                data-street="@customer.Street"
+                                data-postal="@customer.PostalCode"
+                                data-city="@customer.City"
+                                data-email="@customer.Email"
+                                data-phone="@customer.Phone">
+                            @customer.Name
+                        </option>
+                    }
                 </select>
             </div>
             <div class="col-md-6">
@@ -194,5 +206,6 @@
                 resetItemIndices();
             }
         });
+
     </script>
 }

@@ -1,6 +1,8 @@
 ﻿using _2DRakun.Models;
 using Dapper;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace _2DRakun.Helpers
 {
@@ -51,6 +53,15 @@ namespace _2DRakun.Helpers
             {
                 var sql = "SELECT Id FROM Customers WHERE Oib = @Oib AND UserId = @UserId";
                 return conn.QueryFirstOrDefault<int>(sql, new { Oib = oib, UserId = userId });
+            }
+        }
+
+        public static List<Customer> GetCustomersForUser(int userId)
+        {
+            using (var conn = DbHelper.GetOpenConnection())
+            {
+                var sql = "SELECT * FROM Customers WHERE UserId = @UserId ORDER BY Name";
+                return conn.Query<Customer>(sql, new { UserId = userId }).ToList();
             }
         }
     }

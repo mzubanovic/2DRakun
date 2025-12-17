@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -22,6 +23,9 @@ namespace _2DRakun.Models.ViewModels
         public string Note { get; set; }
 
         public List<InvoiceItemVM> Items { get; set; } = new List<InvoiceItemVM>();
+
+        [NotMapped]
+        public List<Customer> ExistingCustomers { get; set; } = new List<Customer>();
     }
 
     public class InvoiceItemVM
