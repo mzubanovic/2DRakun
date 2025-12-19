@@ -3,6 +3,7 @@ using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 
@@ -29,7 +30,7 @@ namespace _2DRakun.Code
             return (int)conn.Insert(item, tran);
         }
 
-        public static decimal CalculateAmount(IEnumerable<InvoiceItem> items)
+        public static decimal CalculateAmount(List<InvoiceItem> items)
         {
             if (items == null)
                 return 0m;
@@ -38,6 +39,12 @@ namespace _2DRakun.Code
                 items.Sum(i => i.Quantity * i.Price),
                 2
             );
+        }
+
+        public static string GetCalculatedAmount_Print(List<InvoiceItem> items)
+        {
+            var rez = CalculateAmount(items);
+            return rez.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
         }
     }
 }

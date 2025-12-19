@@ -1,4 +1,4 @@
-﻿@model _2DRakun.Models.ViewModels.InvoiceViewModel
+﻿kako bi to primjenio ovdje @model _2DRakun.Models.ViewModels.InvoiceViewModel
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -106,49 +106,46 @@
 
         <h4 class="mb-3">Stavke računa</h4>
 
-        <table class="table table-bordered" id="itemsTable">
-            <thead class="table-light">
-                <tr>
-                    <th style="width: 50%;">Opis</th>
-                    <th style="width: 15%;">Jedinica</th>
-                    <th style="width: 15%;">Količina</th>
-                    <th style="width: 15%;">Cijena</th>
-                    <th style="width: 5%;"></th>
-                </tr>
-            </thead>
-            <tbody id="itemsBody">
-                @if (Model.Items != null && Model.Items.Any())
-                {
-                    for (int i = 0; i < Model.Items.Count; i++)
-                    {
-                        <tr>
-                            <td>
-                                <input type="text" name="Items[@i].Description" class="form-control" required value="@Model.Items[i].Description" />
-                            </td>
-                            <td>
-                                <input type="text" name="Items[@i].Unit" class="form-control" placeholder="kom, kg..." required value="@Model.Items[i].Unit" />
-                            </td>
-                            <td>
-                                <input type="number" step="0.01" name="Items[@i].Quantity" class="form-control" required value="@Model.Items[i].Quantity" />
-                            </td>
-                            <td>
-                                <input type="number" step="0.01" name="Items[@i].Price" class="form-control" required value="@Model.Items[i].Price" />
-                            </td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-danger remove-btn">X</button>
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
+        <div id="invoice-items-app">
+            <table class="table table-bordered" id="itemsTable">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 50%;">Opis</th>
+                        <th style="width: 15%;">Jedinica</th>
+                        <th style="width: 15%;">Količina</th>
+                        <th style="width: 15%;">Cijena</th>
+                        <th style="width: 5%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in items" :key="index">
+                        <td>
+                            <input type="text" v-model="item.Description" :name="`Items[${index}].Description`" class="form-control" required />
+                        </td>
+                        <td>
+                            <input type="text" v-model="item.Unit" :name="`Items[${index}].Unit`" class="form-control" placeholder="kom, kg..." required />
+                        </td>
+                        <td>
+                            <input type="number" step="1" v-model.number="item.Quantity" :name="`Items[${index}].Quantity`" class="form-control" required @@change="calculateTotalPrice" />
+                        </td>
+                        <td>
+                            <input type="number" step="0.1" v-model.number="item.Price" :name="`Items[${index}].Price`" class="form-control" required @@change="calculateTotalPrice" />
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-danger" @@click="removeItem(index)">X</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <button type="button" class="btn btn-secondary mb-4" id="addItemBtn">Dodaj stavku</button>
+            <button type="button" class="btn btn-secondary mb-4" @@click="addItem">Dodaj stavku</button>
 
-        <div class="mb-3">
-            <label><strong>Ukupno:</strong></label>
-            <span id="totalAmount">0,00 €</span>
+            <div class="mb-3">
+                <label><strong>Ukupno: </strong></label> <span>{{ totalAmountFormatted }}</span>
+            </div>
         </div>
+
+
 
         <div class="row mb-3">
             <div class="col-md-6">
@@ -164,54 +161,66 @@
 
 @section Scripts {
     <script>
-        let itemIndex = @((Model.Items != null) ? Model.Items.Count : 0);
+        const { createApp } = Vue;
 
-        function resetItemIndices() {
-            const rows = document.querySelectorAll("#itemsBody tr");
-            rows.forEach((row, index) => {
-                row.querySelectorAll("input").forEach(input => {
-                    const name = input.getAttribute("name");
-                    if (!name) return;
-                    const newName = name.replace(/Items\[\d+\]/, `Items[${index}]`);
-                    input.setAttribute("name", newName);
-                });
-            });
-            itemIndex = rows.length;
-        }
+        createApp({
+            data() {
+                return {
+                    items: [
+                        { Description: '', Unit: '', Quantity: 1, Price: 0 }
+                    ],
+                    totalAmountFormatted: '0,00 €' 
+                }
+            },
+            computed: {
+                totalAmount() {
+                    return this.items.reduce((sum, item) => sum + (item.Quantity * item.Price || 0), 0);
+                },
+                totalAmountFormattedComputed() {
+                    return this.totalAmountFormatted; 
+                }
+            },
+            methods: {
+                async calculateTotalPrice() {
+                    try {
+                        const response = await fetch('/api/Api/CalculateTotalAmount', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(this.items)
+                        });
 
-        document.getElementById("addItemBtn").addEventListener("click", function () {
-            const tbody = document.getElementById("itemsBody");
-            const row = document.createElement("tr");
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error('Server error:', errorText);
+                            return;
+                        }
 
-            row.innerHTML = `
-                <td>
-                    <input type="text" name="Items[${itemIndex}].Description" class="form-control" required />
-                </td>
-                <td>
-                    <input type="text" name="Items[${itemIndex}].Unit" class="form-control" placeholder="kom, kg..." required />
-                </td>
-                <td>
-                    <input type="number" step="0.01" name="Items[${itemIndex}].Quantity" class="form-control" required />
-                </td>
-                <td>
-                    <input type="number" step="0.01" name="Items[${itemIndex}].Price" class="form-control" required />
-                </td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-sm btn-danger remove-btn">X</button>
-                </td>
-            `;
+                        const data = await response.json();
+                        this.totalAmountFormatted = data.totalAmountFormatted;
 
-            tbody.appendChild(row);
-            itemIndex++;
-        });
-
-        document.getElementById("itemsBody").addEventListener("click", function (e) {
-            if (e.target.classList.contains("remove-btn")) {
-                e.target.closest("tr").remove();
-                resetItemIndices();
+                    } catch (error) {
+                        console.error('Greška prilikom izračuna:', error);
+                    }
+                },
+                addItem() {
+                    this.items.push({ Description: '', Unit: '', Quantity: 1, Price: 0 });
+                    this.calculateTotalPrice();
+                },
+                removeItem(index) {
+                    this.items.splice(index, 1);
+                    this.calculateTotalPrice();
+                },
+                onItemChange() {
+                    this.calculateTotalPrice();
+                }
+            },
+            mounted() {
+                this.calculateTotalPrice();
             }
-        });
+        }).mount('#invoice-items-app');
 
-    </script>  
+    </script>
 
 }
