@@ -1,11 +1,11 @@
-﻿kako bi to primjenio ovdje @model _2DRakun.Models.ViewModels.InvoiceViewModel
+﻿@model _2DRakun.Models.ViewModels.InvoiceViewModel
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Kreiranje računa";
 }
 
-<div class="invoice-create shadow-sm rounded bg-white p-4">
+<div class="invoice-create shadow-sm rounded bg-white p-4" id="invoice-app">
     <h2 class="text-center mb-4">Novi račun</h2>
 
     <form method="post" action="@Url.Action("CreateInvoice", "Home")" novalidate>
@@ -106,7 +106,7 @@
 
         <h4 class="mb-3">Stavke računa</h4>
 
-        <div id="invoice-items-app">
+        <div id="invoice-items">
             <table class="table table-bordered" id="itemsTable">
                 <thead class="table-light">
                     <tr>
@@ -151,7 +151,7 @@
             <div class="col-md-6">
                 <label for="Cijena_Slovima" class="form-label">Cijena slovima</label>
                 <input type="text" id="Cijena_Slovima" name="Cijena_Slovima" class="form-control"
-                       value="" />
+                       :value="totalAmountTxt" />
             </div>
         </div>
 
@@ -169,15 +169,13 @@
                     items: [
                         { Description: '', Unit: '', Quantity: 1, Price: 0 }
                     ],
-                    totalAmountFormatted: '0,00 €' 
+                    totalAmountFormatted: '0,00 €',
+                    totalAmount: 0.0
                 }
             },
             computed: {
-                totalAmount() {
-                    return this.items.reduce((sum, item) => sum + (item.Quantity * item.Price || 0), 0);
-                },
-                totalAmountFormattedComputed() {
-                    return this.totalAmountFormatted; 
+                totalAmountTxt() {
+                    return this.textualAmount(this.totalAmount);
                 }
             },
             methods: {
@@ -198,7 +196,8 @@
                         }
 
                         const data = await response.json();
-                        this.totalAmountFormatted = data.totalAmountFormatted;
+                        this.totalAmountFormatted = data.res.totalAmountFormatted;
+                        this.totalAmount = data.res.totalAmount;                   
 
                     } catch (error) {
                         console.error('Greška prilikom izračuna:', error);
@@ -214,12 +213,60 @@
                 },
                 onItemChange() {
                     this.calculateTotalPrice();
+                },
+                textualAmount(iznos) {
+                    const jedinice = [
+                        '', 'jedan', 'dva', 'tri', 'četiri', 'pet', 'šest', 'sedam', 'osam', 'devet',
+                        'deset', 'jedanaest', 'dvanaest', 'trinaest', 'četrnaest', 'petnaest',
+                        'šesnaest', 'sedamnaest', 'osamnaest', 'devetnaest'
+                    ];
+
+                    const desetice = [
+                        '', '', 'dvadeset', 'trideset', 'četrdeset', 'pedeset',
+                        'šezdeset', 'sedamdeset', 'osamdeset', 'devedeset'
+                    ];
+
+                    const stotine = [
+                        '', 'sto', 'dvjesto', 'tristo', 'četiristo',
+                        'petsto', 'šeststo', 'sedamsto', 'osamsto', 'devetsto'
+                    ];
+
+                    const brojURijeci = (n) => {
+                        let r = '';
+
+                        if (n >= 100) {
+                            r += stotine[Math.floor(n / 100)];
+                            n %= 100;
+                        }
+
+                        if (n < 20) {
+                            r += jedinice[n];
+                        } else {
+                            r += desetice[Math.floor(n / 10)]  + jedinice[n % 10];
+                        }
+
+                        return r.trim();
+                    };
+
+                    const [cijeli, decimalni] = Number(iznos)
+                        .toFixed(2)
+                        .split('.')
+                        .map(Number);
+
+                    let tekst = cijeli === 0 ? 'nula' : brojURijeci(cijeli);
+                    tekst += 'eura';
+
+                    if (decimalni > 0) {
+                        tekst += 'i' + brojURijeci(decimalni) + 'centi';
+                    }
+                    return tekst;
                 }
+
             },
             mounted() {
                 this.calculateTotalPrice();
             }
-        }).mount('#invoice-items-app');
+        }).mount('#invoice-app');
 
     </script>
 

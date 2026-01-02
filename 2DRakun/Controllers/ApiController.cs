@@ -17,12 +17,22 @@ namespace _2DRakun.Controllers
             public decimal Price { get; set; }
         }
 
+        public class TotalAmountResult { 
+            public string totalAmountFormatted { get; set; }
+            public decimal totalAmount { get; set; }
+        }
+
         [HttpPost]
         public ActionResult CalculateTotalAmount(List<InvoiceItem> items)
         {
             decimal total = items.Sum(i => i.Quantity * i.Price);
             var totalFormatted = total.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
-            return Json(new { totalAmountFormatted = totalFormatted });
+            var res = new TotalAmountResult
+            {
+                totalAmountFormatted = totalFormatted,
+                totalAmount = total
+            };
+            return Json(new { res });
         }
     }
 
