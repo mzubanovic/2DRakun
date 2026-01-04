@@ -80,6 +80,28 @@ namespace _2DRakun.Controllers
                 return View("NewInvoice", model);
             }
 
+            var items = model.Items.Select(i => new InvoiceItem
+            {
+                Description = i.Description,
+                Unit = i.Unit,
+                Quantity = i.Quantity ?? 0,
+                Price = i.Price ?? 0m
+            }).ToList();
+ 
+            return View("InvoicePreview", model);
+        }
+
+      
+        public ActionResult SaveInvoice(InvoiceViewModel model)
+        {
+
+            //TO DO: Refactor to avoid code duplication with CreateInvoice
+            if (!ModelState.IsValid || model.Items == null || !model.Items.Any())
+            {
+                ModelState.AddModelError("", "Račun mora sadržavati barem jednu stavku.");
+                return View("NewInvoice", model);
+            }
+
             var cUserId = AuthHelper.GetCurrentUserId(HttpContext);
 
             var nCustomer = new Customer

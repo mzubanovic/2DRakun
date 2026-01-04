@@ -1,4 +1,5 @@
 ﻿using _2DRakun.Models;
+using _2DRakun.Models.ViewModels;
 using Dapper;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,23 @@ namespace _2DRakun.Code
         }
 
         public static string GetCalculatedAmount_Print(List<InvoiceItem> items)
+        {
+            var rez = CalculateAmount(items);
+            return rez.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
+        }
+
+        public static decimal CalculateAmount(List<InvoiceItemVM> items)
+        {
+            if (items == null)
+                return 0m;
+
+            return Math.Round(
+                (decimal)items.Sum(i => i.Quantity * i.Price),
+                2
+            );
+        }
+
+        public static string GetCalculatedAmount_Print(List<InvoiceItemVM> items)
         {
             var rez = CalculateAmount(items);
             return rez.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";

@@ -38,6 +38,7 @@ namespace _2DRakun.Models
         public string Amount_saPDV_Print => Amount_saPDV == 0 ? "" : Amount_saPDV.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
         [NotMapped]
         public string Amount_Print => Amount == 0 ? "" : Amount.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
+        public string AmountTxt { get; set; }
         [NotMapped]
         public string Currency { get; set; } = "EUR";
         public string PdfFilePath { get; set; }
