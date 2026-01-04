@@ -24,7 +24,7 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="CustomerId" class="form-label">Kupac</label>
-                <select id="CustomerId" name="CustomerId" class="form-select" required>
+                <select id="CustomerId" name="CustomerId" class="form-select" required @@change="onCustomerChange">
                     <option value="" selected>Odaberite kupca</option>
                     @foreach (var customer in Model.ExistingCustomers)
                     {
@@ -44,7 +44,7 @@
             <div class="col-md-6">
                 <label for="CustomerOib" class="form-label">OIB</label>
                 <input type="text" id="CustomerOib" name="CustomerOib" class="form-control" maxlength="11" pattern="\d{11}"
-                       title="OIB mora sadržavati točno 11 znamenki" required value="@Model.CustomerOib" />
+                       title="OIB mora sadržavati točno 11 znamenki" required value="@Model.CustomerOib" v-model="customer.oib"/>
             </div>
         </div>
 
@@ -52,12 +52,12 @@
             <div class="col-md-6">
                 <label for="CustomerName" class="form-label">Ime i prezime / Naziv</label>
                 <input type="text" id="CustomerName" name="CustomerName" class="form-control" required
-                       value="@Model.CustomerName" />
+                       value="@Model.CustomerName" v-model="customer.name"/>
             </div>
             <div class="col-md-6">
                 <label for="CustomerStreet" class="form-label">Ulica i broj</label>
                 <input type="text" id="CustomerStreet" name="CustomerStreet" class="form-control" required
-                       value="@Model.CustomerStreet" />
+                       value="@Model.CustomerStreet" v-model="customer.street"/>
             </div>
         </div>
 
@@ -65,12 +65,12 @@
             <div class="col-md-6">
                 <label for="CustomerPostalCode" class="form-label">Poštanski broj</label>
                 <input type="text" id="CustomerPostalCode" name="CustomerPostalCode" class="form-control" required
-                       value="@Model.CustomerPostalCode" />
+                       value="@Model.CustomerPostalCode" v-model="customer.postalCode"/>
             </div>
             <div class="col-md-6">
                 <label for="CustomerCity" class="form-label">Mjesto</label>
                 <input type="text" id="CustomerCity" name="CustomerCity" class="form-control" required
-                       value="@Model.CustomerCity" />
+                       value="@Model.CustomerCity" v-model="customer.city"/>
             </div>
         </div>
 
@@ -78,12 +78,12 @@
             <div class="col-md-6">
                 <label for="CustomerEmail" class="form-label">Email</label>
                 <input type="email" id="CustomerEmail" name="CustomerEmail" class="form-control" required
-                       value="@Model.CustomerEmail" />
+                       value="@Model.CustomerEmail" v-model="customer.email"/>
             </div>
             <div class="col-md-6">
                 <label for="CustomerPhone" class="form-label">Telefon</label>
                 <input type="tel" id="CustomerPhone" name="CustomerPhone" class="form-control"
-                       value="@Model.CustomerPhone" />
+                       value="@Model.CustomerPhone" v-model="customer.phone"/>
             </div>
         </div>
 
@@ -150,7 +150,7 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="Cijena_Slovima" class="form-label">Cijena slovima</label>
-                <input type="text" id="Cijena_Slovima" name="Cijena_Slovima" class="form-control"
+                <input type="text" id="Cijena_Slovima" name="AmountTxt" class="form-control"
                        :value="totalAmountTxt" />
             </div>
         </div>
@@ -170,7 +170,17 @@
                         { Description: '', Unit: '', Quantity: 1, Price: 0 }
                     ],
                     totalAmountFormatted: '0,00 €',
-                    totalAmount: 0.0
+                    totalAmount: 0.0,
+                    customer: {
+                        id: null,
+                        oib: '',
+                        name: '',
+                        street: '',
+                        postalCode: '',
+                        city: '',
+                        email: '',
+                        phone: ''
+                    }
                 }
             },
             computed: {
@@ -179,6 +189,33 @@
                 }
             },
             methods: {
+                onCustomerChange(event) {
+                    const select = event.target;
+                    const selectedOption = select.options[select.selectedIndex];
+
+                    if (selectedOption && selectedOption.value) {
+                        this.customer.id = selectedOption.value;
+                        this.customer.oib = selectedOption.getAttribute('data-oib') || '';
+                        this.customer.name = selectedOption.getAttribute('data-name') || '';
+                        this.customer.street = selectedOption.getAttribute('data-street') || '';
+                        this.customer.postalCode = selectedOption.getAttribute('data-postal') || '';
+                        this.customer.city = selectedOption.getAttribute('data-city') || '';
+                        this.customer.email = selectedOption.getAttribute('data-email') || '';
+                        this.customer.phone = selectedOption.getAttribute('data-phone') || '';
+                    } else {
+                        // Ako je odabran prazan (default) option, isprazni polja
+                        this.customer = {
+                            id: null,
+                            oib: '',
+                            name: '',
+                            street: '',
+                            postalCode: '',
+                            city: '',
+                            email: '',
+                            phone: ''
+                        };
+                    }
+                },
                 async calculateTotalPrice() {
                     try {
                         const response = await fetch('/api/Api/CalculateTotalAmount', {
