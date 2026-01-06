@@ -21,6 +21,15 @@ namespace _2DRakun.Models
         [StringLength(100)]
         public string CompanyName { get; set; }
 
+        [StringLength(100)]
+        public string Street { get; set; }
+
+        [StringLength(100)]
+        public string City { get; set; }
+
+        [StringLength(20)]
+        public string PostalCode { get; set; }
+
         [StringLength(11, MinimumLength = 11, ErrorMessage = "OIB mora imati 11 znakova")]
         public string Oib { get; set; }
 

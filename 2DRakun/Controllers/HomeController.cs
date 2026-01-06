@@ -1,4 +1,5 @@
 ﻿using _2DRakun.Code;
+using _2DRakun.Code._2DBarCode;
 using _2DRakun.Helpers;
 using _2DRakun.Models;
 using _2DRakun.Models.ViewModels;
@@ -128,7 +129,7 @@ namespace _2DRakun.Controllers
             var amount = InvoiceHelper.CalculateAmount(items);
 
             model.Note += "<br><br>Račun je izdan u elektroničkom obliku i važeći je bez pečata i potpisa";
-
+   
             var invoice = new Invoice
             {
                 CustomerId = customerId,
@@ -139,9 +140,37 @@ namespace _2DRakun.Controllers
                 Note = model.Note,
                 AmountTxt = model.AmountTxt,
                 Amount = model.Amount
-                
+               
             };
 
+            var user = UsersHelper.GetUserById(cUserId);
+            var hubPayload = Hub3aPayloadBuilder.Build(
+                    receiverName: user.CompanyName,
+                    receiverStreet: user.Street,
+                    receiverCity: user.PostalCode + " " + user.City,
+                    receiverIban: user.IBAN,
+                    receiverCountry: "HRVATSKA",
+                    amount: amount,
+                    model: "00",
+                    reference: model.InvoiceNumber,
+                    description: "Račun " + model.InvoiceNumber
+                );
+
+            var qrBytes = QrCodeService.GenerateQrCodeBase64(hubPayload);
+
+            //Renderiraj view u HTML string
+            string htmlContent = PdfHelper.RenderViewToString(this.ControllerContext, "InvoicePreview", model);
+
+            //Generiraj PDF iz HTML stringa
+            var pdfBytes = PdfHelper.GeneratePdfFromHtml(htmlContent);
+
+            //Spremi PDF na disk ili vrati kao FileResult
+            string pdfPath = Server.MapPath($"~/App_Data/Invoices/{model.InvoiceNumber}.pdf");
+            System.IO.File.WriteAllBytes(pdfPath, pdfBytes);
+
+            model.PdfFilePath = pdfPath;
+
+            
             DbHelper.ExecuteInTransaction((conn, tran) =>
             {
                 var invoiceId = InvoiceHelper.CreateInvoice(conn, tran, invoice);
@@ -153,8 +182,7 @@ namespace _2DRakun.Controllers
                 }
             });
 
-            TempData["SuccessMessage"] = "Račun je uspješno spremljen.";
-            return RedirectToAction("NewInvoice");
+            return File(pdfBytes, "application/pdf", $"Invoice_{model.InvoiceNumber}_{DateTime.Now.ToString("dd-MM-yyyy")}.pdf");
         }
 
 

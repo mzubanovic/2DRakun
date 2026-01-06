@@ -7,13 +7,6 @@ namespace _2DRakun
 {
     public class UsersHelper
     {
-        public User GetUserById(int id)
-        {
-            using (var conn = DbHelper.GetOpenConnection())
-            {
-                return conn.Get<User>(id);  
-            }
-        }
 
         public int UpdateUser(User user)
         {
@@ -52,6 +45,22 @@ namespace _2DRakun
             using (var conn = DbHelper.GetOpenConnection())
             {
                 return conn.QueryFirstOrDefault<User>("SELECT top(1) * FROM USERS WHERE email = @email" , new { email});
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a user from the database by unique Id.
+        /// </summary>
+        /// <param name="id">Id of the user to retrieve.</param>
+        /// <returns>
+        /// A <see cref="User"/> object if a user with the specified email exists; 
+        /// otherwise, <c>null</c>.
+        /// </returns>
+        public static User GetUserById(int id)
+        {
+            using (var conn = DbHelper.GetOpenConnection())
+            {
+                return conn.Get<User>(id);
             }
         }
 

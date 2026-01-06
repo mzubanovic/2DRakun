@@ -36,6 +36,26 @@ namespace _2DRakun.Models.ViewModels
 
         [NotMapped]
         public string Amount_Print => Amount == 0 ? "" : Amount.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
+
+        [NotMapped]
+        public string SellerName { get; set; }
+
+        [NotMapped]
+        public string SellerOib { get; set; }
+
+        [NotMapped]
+        public string SellerAddress { get; set; }
+
+        [NotMapped]
+        public string SellerCity { get; set; }
+
+        [NotMapped]
+        public string SellerPostal { get; set; }
+
+        [NotMapped]
+        public string SellerPhone { get; set; }
+
+        public string QrCodeBase64 { get; set; }
     }
 
     public class InvoiceItemVM
