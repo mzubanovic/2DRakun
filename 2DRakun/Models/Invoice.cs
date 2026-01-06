@@ -27,8 +27,8 @@ namespace _2DRakun.Models
         [NotMapped]
         public DateTime DueDate => IssueDate.AddDays(15);
 
-        [NotMapped]
-        public decimal Amount => InvoiceHelper.CalculateAmount(Items);
+        //public decimal Amount => InvoiceHelper.CalculateAmount(Items);
+        public decimal Amount { get; set; }
 
         [NotMapped]
         public decimal PDV => Math.Round(Amount * 0.25m, 2);

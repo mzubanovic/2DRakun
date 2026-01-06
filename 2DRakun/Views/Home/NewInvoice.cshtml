@@ -8,7 +8,7 @@
 <div class="invoice-create shadow-sm rounded bg-white p-4" id="invoice-app">
     <h2 class="text-center mb-4">Novi račun</h2>
 
-    <form method="post" action="@Url.Action("CreateInvoice", "Home")" novalidate>
+    <form method="post" action="@Url.Action("PreviewInvoice", "Home")" novalidate>
         @Html.AntiForgeryToken()
 
         <div class="row mb-3">
@@ -155,7 +155,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Spremi račun</button>
+        <button type="submit" class="btn btn-primary">Pregledaj račun</button>
     </form>
 </div>
 

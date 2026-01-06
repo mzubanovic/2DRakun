@@ -72,7 +72,7 @@ namespace _2DRakun.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateInvoice(InvoiceViewModel model)
+        public ActionResult PreviewInvoice(InvoiceViewModel model)
         {
             if (!ModelState.IsValid || model.Items == null || !model.Items.Any())
             {
@@ -92,10 +92,9 @@ namespace _2DRakun.Controllers
         }
 
       
-        public ActionResult SaveInvoice(InvoiceViewModel model)
+        public ActionResult ConfirmInvoice(InvoiceViewModel model)
         {
 
-            //TO DO: Refactor to avoid code duplication with CreateInvoice
             if (!ModelState.IsValid || model.Items == null || !model.Items.Any())
             {
                 ModelState.AddModelError("", "Račun mora sadržavati barem jednu stavku.");
@@ -133,10 +132,14 @@ namespace _2DRakun.Controllers
             var invoice = new Invoice
             {
                 CustomerId = customerId,
+                InvoiceNumber = model.InvoiceNumber,
                 UserId = cUserId,
                 IssueDate = DateTime.Now,
                 PdfFilePath = model.PdfFilePath,
-                Note = model.Note
+                Note = model.Note,
+                AmountTxt = model.AmountTxt,
+                Amount = model.Amount
+                
             };
 
             DbHelper.ExecuteInTransaction((conn, tran) =>

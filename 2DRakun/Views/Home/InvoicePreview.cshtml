@@ -64,7 +64,7 @@
         @Html.Raw(Model.Note)
     </div>
 
-    <form method="post" action="@Url.Action("GenerateInvoicePdf", "Home")">
+    <form method="post" action="@Url.Action("ConfirmInvoice", "Home")">
         @Html.AntiForgeryToken()
 
         <input type="hidden" name="InvoiceNumber" value="@Model.InvoiceNumber" />
