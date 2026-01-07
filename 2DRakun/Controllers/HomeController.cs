@@ -159,13 +159,17 @@ namespace _2DRakun.Controllers
             var qrBytes = QrCodeService.GenerateQrCodeBase64(hubPayload);
 
             //Renderiraj view u HTML string
-            string htmlContent = PdfHelper.RenderViewToString(this.ControllerContext, "InvoicePreview", model);
+            var htmlContent = PdfHelper.RenderViewToString(
+                    ControllerContext,
+                    "InvoicePreview",
+                    model);
 
             //Generiraj PDF iz HTML stringa
             var pdfBytes = PdfHelper.GeneratePdfFromHtml(htmlContent);
 
             //Spremi PDF na disk ili vrati kao FileResult
-            string pdfPath = Server.MapPath($"~/App_Data/Invoices/{model.InvoiceNumber}.pdf");
+            var invoiceName = $"Invoice_{model.InvoiceNumber}_{DateTime.Now.ToString("dd-MM-yyyy")}";
+            string pdfPath = Server.MapPath($"~/Documents/Invoices/{invoiceName}.pdf");
             System.IO.File.WriteAllBytes(pdfPath, pdfBytes);
 
             model.PdfFilePath = pdfPath;
@@ -182,7 +186,7 @@ namespace _2DRakun.Controllers
                 }
             });
 
-            return File(pdfBytes, "application/pdf", $"Invoice_{model.InvoiceNumber}_{DateTime.Now.ToString("dd-MM-yyyy")}.pdf");
+            return File(pdfBytes, "application/pdf", $"{invoiceName}.pdf");
         }
 
 
