@@ -1,0 +1,43 @@
+﻿@model _2DRakun.Models.ViewModels.InvoiceViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Poruka";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-success">
+                <div class="card-body text-center">
+
+                    <div class="mb-3">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                    </div>
+
+                    <h4 class="text-success mb-3">
+                        Račun br @Model.InvoiceNumber je uspješno kreiran
+                    </h4>
+
+                    <p class="text-muted mb-4">
+                        Račun je uspješno spremljen u sustav.
+                    </p>
+
+                    @if (!string.IsNullOrEmpty(Model?.PdfFilePath))
+                    {
+                        <a href="@Model.PdfFilePath"
+                           class="btn btn-success me-2"
+                           target="_blank">
+                            Preuzmi PDF
+                        </a>
+                    }
+
+                    <a href="@Url.Action("NewInvoice", "Home")"
+                       class="btn btn-outline-secondary">
+                        Povratak
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

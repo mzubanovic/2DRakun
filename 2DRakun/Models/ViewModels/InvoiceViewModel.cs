@@ -54,6 +54,8 @@ namespace _2DRakun.Models.ViewModels
 
         [NotMapped]
         public string SellerPhone { get; set; }
+        [NotMapped]
+        public string SellerIBAN { get; set; }
 
         public string QrCodeBase64 { get; set; }
     }

@@ -428,6 +428,23 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Documents\Invoices\Invoice_454_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_456_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_45_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_4654_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_546_07-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_56_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_5_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_654_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_657_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_675_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_756_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_765756_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_78_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_bfd_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_gfrg_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice_gregerge_09-01-2026.pdf" />
+    <Content Include="Documents\Invoices\Invoice__09-01-2026.pdf" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -458,6 +475,7 @@
     <Content Include="Views\Home\NewInvoice.cshtml" />
     <Content Include="Views\Home\InvoicePreview.cshtml" />
     <Content Include="Views\Home\InvoiceTemplate.cshtml" />
+    <Content Include="Views\Home\Message.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

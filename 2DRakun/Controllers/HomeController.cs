@@ -81,6 +81,21 @@ namespace _2DRakun.Controllers
                 return View("NewInvoice", model);
             }
 
+            var userid = AuthHelper.GetCurrentUserId(HttpContext);
+            if (userid == 0)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            var user = UsersHelper.GetUserById(userid);
+
+            model.SellerName = (string.IsNullOrEmpty(user.CompanyName) ? user.FirstName + " " + user.LastName : user.CompanyName);
+            model.SellerAddress = user.Street;
+            model.SellerPostal = user.PostalCode;
+            model.SellerCity = user.City;
+            model.SellerOib = user.Oib;
+            model.SellerIBAN = user.IBAN;
+
             var items = model.Items.Select(i => new InvoiceItem
             {
                 Description = i.Description,
@@ -115,6 +130,15 @@ namespace _2DRakun.Controllers
             model.Note += "<br><br>Račun je izdan u elektroničkom obliku i važeći je bez pečata i potpisa";
 
             var user = UsersHelper.GetUserById(cUserId);
+            if (user == null) {
+                return RedirectToAction("Login", "Home");
+            }
+            model.SellerName = (string.IsNullOrEmpty(user.CompanyName) ? user.FirstName + " " + user.LastName : user.CompanyName);
+            model.SellerAddress = user.Street;
+            model.SellerPostal = user.PostalCode;
+            model.SellerCity = user.City;
+            model.SellerOib = user.Oib;
+            model.SellerIBAN = user.IBAN;
             InvoiceService.AddPdf417BarcodeToModel(model, amount, model.InvoiceNumber, user);
 
             //Renderiraj view u HTML string
@@ -131,7 +155,7 @@ namespace _2DRakun.Controllers
             string pdfPath = Server.MapPath($"~/Documents/Invoices/{invoiceName}");
             System.IO.File.WriteAllBytes(pdfPath, pdfBytes);
 
-            model.PdfFilePath = pdfPath;
+            model.PdfFilePath = Url.Content($"~/Documents/Invoices/{invoiceName}");
 
             var invoice = new Invoice
             {
@@ -157,20 +181,19 @@ namespace _2DRakun.Controllers
                 }
             });
 
-            return File(pdfBytes, "application/pdf", $"{invoiceName}");
+            TempData["InvoiceModel"] = model;
+            return RedirectToAction("Message");
         }
 
+        public ActionResult Message()
+        {
+            var model = TempData["InvoiceModel"] as InvoiceViewModel;
+            return View(model);
+        }
 
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
 
             return View();
         }

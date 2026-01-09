@@ -15,6 +15,15 @@
     </p>
 
     <hr />
+    <h4>Podaci o prodavatelju</h4>
+    <p><strong>Naziv:</strong> @Model.SellerName</p>
+    <p><strong>OIB:</strong> @Model.SellerOib</p>
+    <p>
+        <strong>Adresa:</strong> @Model.SellerAddress, @Model.SellerPostal @Model.SellerCity
+    </p>
+    <p><strong>IBAN:</strong> @Model.SellerIBAN</p>
+
+    <hr />
 
     <h4>Podaci o kupcu</h4>
     <p><strong>Naziv:</strong> @Model.CustomerName</p>
@@ -51,7 +60,7 @@
     <p class="text-end">
         <strong>Ukupno:</strong> @Model.Amount_Print
     </p>
-    
+
     <p>
         <strong>Iznos slovima:</strong><br />
         @Model.AmountTxt
@@ -80,7 +89,7 @@
         <input type="hidden" name="CustomerPostalCode" value="@Model.CustomerPostalCode" />
         <input type="hidden" name="CustomerCity" value="@Model.CustomerCity" />
         <input type="hidden" name="CustomerEmail" value="@Model.CustomerEmail" />
-        <input type="hidden" name="CustomerPhone" value="@Model.CustomerPhone" />
+        <input type="hidden" name="CustomerPhone" value="@Model.CustomerPhone" />       
 
         <!-- Stavke -->
         @for (int i = 0; i < Model.Items.Count; i++)

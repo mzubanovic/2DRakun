@@ -8,16 +8,21 @@
 <head>
     <meta charset="utf-8" />
     <title>Račun @Model.InvoiceNumber</title>
-
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 12px;
             color: #000;
+            margin: 20px;
         }
 
-        h1, h2, h3, h4 {
-            margin: 0 0 10px 0;
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h4 {
+            margin-bottom: 10px;
         }
 
         .section {
@@ -38,6 +43,11 @@
             background-color: #f2f2f2;
         }
 
+        .no-border td {
+            border: none;
+            padding: 2px 0;
+        }
+
         .text-right {
             text-align: right;
         }
@@ -46,14 +56,11 @@
             text-align: center;
         }
 
-        .no-border td {
-            border: none;
-            padding: 2px 0;
-        }
-
         .total {
             font-size: 14px;
             font-weight: bold;
+            text-align: right;
+            margin-top: 10px;
         }
 
         .qr-box {
@@ -61,44 +68,103 @@
             text-align: right;
         }
 
-        .qr-box img {
-            width: 280;
-            height: 240;
+            .qr-box img {
+                width: 280px;
+                height: 240px;
+            }
+
+        .seller-customer-container {
+            width: 100%;
+            margin-bottom: 30px;
+            display: table;
+            table-layout: fixed;
+            border-spacing: 20px 0; /* razmak između stupaca */
         }
+
+        .seller-customer-box, .customer-box {
+            display: table-cell;
+            vertical-align: top;
+            width: 50%;
+            box-sizing: border-box;
+            padding: 0 10px; /* malo unutarnjeg razmaka, možeš prilagoditi */
+        }
+
+        .seller-customer-box {
+            padding-left: 0; /* skroz lijevo */
+        }
+
+        .customer-box {
+            padding-right: 0; /* skroz desno */
+        }
+
+            /* Stil naslova */
+            .seller-customer-box h4, .customer-box h4 {
+                border-bottom: 2px solid #000;
+                padding-bottom: 6px;
+                margin-bottom: 15px;
+                font-weight: bold;
+            }
+
+            /* Tablice unutar boxeva */
+            .seller-customer-box table, .customer-box table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .seller-customer-box td, .customer-box td {
+                border: none;
+                padding: 6px 0;
+            }
+
+                .seller-customer-box td strong, .customer-box td strong {
+                    display: inline-block;
+                    width: 110px;
+                }
+
+
     </style>
 </head>
 <body>
 
-    <h2 class="text-center">RAČUN br. @Model.InvoiceNumber</h2>
+    <h2>RAČUN br. @Model.InvoiceNumber</h2>
 
-    <div class="section">
-        <table class="no-border">
-            <tr>              
-                <td class="text-right">
-                    <strong>Datum:</strong>
-                    @(Model.IssueDate == DateTime.MinValue
-                        ? DateTime.Now.ToString("dd.MM.yyyy")
-                        : Model.IssueDate.ToString("dd.MM.yyyy"))
-                </td>
-            </tr>
-        </table>
+    <div class="section no-border" style="text-align:right;">
+        <strong>Datum:</strong>
+        @Model.IssueDate.ToString();
     </div>
 
-    <div class="section">
-        <h4>Podaci o kupcu</h4>
-        <table class="no-border">
-            <tr><td><strong>Naziv:</strong> @Model.CustomerName</td></tr>
-            <tr><td><strong>OIB:</strong> @Model.CustomerOib</td></tr>
-            <tr>
-                <td>
-                    <strong>Adresa:</strong>
-                    @Model.CustomerStreet, @Model.CustomerPostalCode @Model.CustomerCity
-                </td>
-            </tr>
-            <tr><td><strong>Email:</strong> @Model.CustomerEmail</td></tr>
-            <tr><td><strong>Telefon:</strong> @Model.CustomerPhone</td></tr>
-        </table>
+    <div class="seller-customer-container">
+        <div class="seller-customer-box">
+            <h4>Podaci o prodavatelju</h4>
+            <table>
+                <tr><td><strong>Naziv:</strong> @Model.SellerName</td></tr>
+                <tr><td><strong>OIB:</strong> @Model.SellerOib</td></tr>
+                <tr><td><strong>Adresa:</strong> @Model.SellerAddress, @Model.SellerPostal @Model.SellerCity</td></tr>
+                @if (!string.IsNullOrWhiteSpace(Model.SellerIBAN))
+                {
+                    <tr><td><strong>IBAN:</strong> @Model.SellerIBAN</td></tr>
+                }
+            </table>
+        </div>
+
+        <div class="customer-box">
+            <h4>Podaci o kupcu</h4>
+            <table>
+                <tr><td><strong>Naziv:</strong> @Model.CustomerName</td></tr>
+                <tr><td><strong>OIB:</strong> @Model.CustomerOib</td></tr>
+                <tr><td><strong>Adresa:</strong> @Model.CustomerStreet, @Model.CustomerPostalCode @Model.CustomerCity</td></tr>
+                @if (!string.IsNullOrWhiteSpace(Model.CustomerEmail))
+                {
+                    <tr><td><strong>Email:</strong> @Model.CustomerEmail</td></tr>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.CustomerPhone))
+                {
+                    <tr><td><strong>Telefon:</strong> @Model.CustomerPhone</td></tr>
+                }
+            </table>
+        </div>
     </div>
+
 
     <div class="section">
         <h4>Stavke računa</h4>
@@ -125,7 +191,7 @@
         </table>
     </div>
 
-    <div class="section text-right total">
+    <div class="total">
         Ukupno: @Model.Amount_Print
     </div>
 
