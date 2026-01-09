@@ -1,0 +1,153 @@
+﻿@model _2DRakun.Models.ViewModels.InvoiceViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Račun @Model.InvoiceNumber</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            color: #000;
+        }
+
+        h1, h2, h3, h4 {
+            margin: 0 0 10px 0;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .no-border td {
+            border: none;
+            padding: 2px 0;
+        }
+
+        .total {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .qr-box {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        .qr-box img {
+            width: 280;
+            height: 240;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 class="text-center">RAČUN br. @Model.InvoiceNumber</h2>
+
+    <div class="section">
+        <table class="no-border">
+            <tr>              
+                <td class="text-right">
+                    <strong>Datum:</strong>
+                    @(Model.IssueDate == DateTime.MinValue
+                        ? DateTime.Now.ToString("dd.MM.yyyy")
+                        : Model.IssueDate.ToString("dd.MM.yyyy"))
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h4>Podaci o kupcu</h4>
+        <table class="no-border">
+            <tr><td><strong>Naziv:</strong> @Model.CustomerName</td></tr>
+            <tr><td><strong>OIB:</strong> @Model.CustomerOib</td></tr>
+            <tr>
+                <td>
+                    <strong>Adresa:</strong>
+                    @Model.CustomerStreet, @Model.CustomerPostalCode @Model.CustomerCity
+                </td>
+            </tr>
+            <tr><td><strong>Email:</strong> @Model.CustomerEmail</td></tr>
+            <tr><td><strong>Telefon:</strong> @Model.CustomerPhone</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h4>Stavke računa</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Opis</th>
+                    <th>Jedinica</th>
+                    <th class="text-right">Količina</th>
+                    <th class="text-right">Cijena</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Description</td>
+                        <td>@item.Unit</td>
+                        <td class="text-right">@item.Quantity</td>
+                        <td class="text-right">@item.Price_Print</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section text-right total">
+        Ukupno: @Model.Amount_Print
+    </div>
+
+    <div class="section">
+        <strong>Iznos slovima:</strong><br />
+        @Model.AmountTxt
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Note))
+    {
+        <div class="section">
+            <strong>Napomena:</strong><br />
+            @Html.Raw(Model.Note)
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.QrCodeBase64))
+    {
+        <div class="qr-box">
+            <img src="data:image/png;base64,@Model.QrCodeBase64" />
+        </div>
+    }
+
+</body>
+</html>

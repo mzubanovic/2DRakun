@@ -64,5 +64,6 @@ namespace _2DRakun.Helpers
                 return conn.Query<Customer>(sql, new { UserId = userId }).ToList();
             }
         }
+
     }
 }

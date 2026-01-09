@@ -96,27 +96,11 @@ namespace _2DRakun.Controllers
         public ActionResult ConfirmInvoice(InvoiceViewModel model)
         {
 
-            if (!ModelState.IsValid || model.Items == null || !model.Items.Any())
-            {
-                ModelState.AddModelError("", "Račun mora sadržavati barem jednu stavku.");
-                return View("NewInvoice", model);
-            }
+            InvoiceService.ValidateInvoiceModel(model);
 
             var cUserId = AuthHelper.GetCurrentUserId(HttpContext);
 
-            var nCustomer = new Customer
-            {
-                Name = model.CustomerName,
-                Email = model.CustomerEmail,
-                City = model.CustomerCity,
-                Street = model.CustomerStreet,
-                PostalCode = model.CustomerPostalCode,
-                Oib = model.CustomerOib,
-                Phone = model.CustomerPhone,
-                UserId = cUserId
-            };
-
-            int customerId = CustomerHelper.InsertOrUpdateCustomer(nCustomer);
+            int customerId = InvoiceService.SaveCustomer(model, cUserId);
 
             var items = model.Items.Select(i => new InvoiceItem
             {
@@ -129,7 +113,26 @@ namespace _2DRakun.Controllers
             var amount = InvoiceHelper.CalculateAmount(items);
 
             model.Note += "<br><br>Račun je izdan u elektroničkom obliku i važeći je bez pečata i potpisa";
-   
+
+            var user = UsersHelper.GetUserById(cUserId);
+            InvoiceService.AddPdf417BarcodeToModel(model, amount, model.InvoiceNumber, user);
+
+            //Renderiraj view u HTML string
+            var htmlContent = PdfHelper.RenderViewToString(
+                    ControllerContext,
+                    "InvoiceTemplate",
+                    model);
+
+            //Generiraj PDF iz HTML stringa
+            var pdfBytes = PdfHelper.GeneratePdfFromHtml(htmlContent);
+
+            //Spremi PDF na disk ili vrati kao FileResult
+            var invoiceName = $"Invoice_{model.InvoiceNumber}_{DateTime.Now.ToString("dd-MM-yyyy")}.pdf";
+            string pdfPath = Server.MapPath($"~/Documents/Invoices/{invoiceName}");
+            System.IO.File.WriteAllBytes(pdfPath, pdfBytes);
+
+            model.PdfFilePath = pdfPath;
+
             var invoice = new Invoice
             {
                 CustomerId = customerId,
@@ -143,38 +146,6 @@ namespace _2DRakun.Controllers
                
             };
 
-            var user = UsersHelper.GetUserById(cUserId);
-            var hubPayload = Hub3aPayloadBuilder.Build(
-                    receiverName: user.CompanyName,
-                    receiverStreet: user.Street,
-                    receiverCity: user.PostalCode + " " + user.City,
-                    receiverIban: user.IBAN,
-                    receiverCountry: "HRVATSKA",
-                    amount: amount,
-                    model: "00",
-                    reference: model.InvoiceNumber,
-                    description: "Račun " + model.InvoiceNumber
-                );
-
-            var qrBytes = QrCodeService.GenerateQrCodeBase64(hubPayload);
-
-            //Renderiraj view u HTML string
-            var htmlContent = PdfHelper.RenderViewToString(
-                    ControllerContext,
-                    "InvoicePreview",
-                    model);
-
-            //Generiraj PDF iz HTML stringa
-            var pdfBytes = PdfHelper.GeneratePdfFromHtml(htmlContent);
-
-            //Spremi PDF na disk ili vrati kao FileResult
-            var invoiceName = $"Invoice_{model.InvoiceNumber}_{DateTime.Now.ToString("dd-MM-yyyy")}";
-            string pdfPath = Server.MapPath($"~/Documents/Invoices/{invoiceName}.pdf");
-            System.IO.File.WriteAllBytes(pdfPath, pdfBytes);
-
-            model.PdfFilePath = pdfPath;
-
-            
             DbHelper.ExecuteInTransaction((conn, tran) =>
             {
                 var invoiceId = InvoiceHelper.CreateInvoice(conn, tran, invoice);
@@ -186,7 +157,7 @@ namespace _2DRakun.Controllers
                 }
             });
 
-            return File(pdfBytes, "application/pdf", $"{invoiceName}.pdf");
+            return File(pdfBytes, "application/pdf", $"{invoiceName}");
         }
 
 

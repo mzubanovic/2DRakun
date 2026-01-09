@@ -135,9 +135,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="QRCoder, Version=1.7.0.0, Culture=neutral, PublicKeyToken=c4ed5b9ae8358a28, processorArchitecture=MSIL">
-      <HintPath>..\packages\QRCoder.1.7.0\lib\net40\QRCoder.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.AppContext.4.1.0\lib\net463\System.AppContext.dll</HintPath>
@@ -367,16 +364,23 @@
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="zxing, Version=0.16.11.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.11\lib\net48\zxing.dll</HintPath>
+    </Reference>
+    <Reference Include="zxing.presentation, Version=0.16.11.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.11\lib\net48\zxing.presentation.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Code\QRCode\QrCodeService.cs" />
+    <Compile Include="Code\InvoiceService.cs" />
+    <Compile Include="Code\BarCode\BarCodeService.cs" />
     <Compile Include="Code\AuthHelper.cs" />
     <Compile Include="Code\CustomerHelper.cs" />
     <Compile Include="Code\DbHelper.cs" />
-    <Compile Include="Code\QRCode\Hub3aPayloadBuilder.cs" />
+    <Compile Include="Code\BarCode\Hub3aPayloadBuilder.cs" />
     <Compile Include="Code\IntHelper.cs" />
     <Compile Include="Code\InvoiceHelper.cs" />
     <Compile Include="Code\pdf\PdfHelper.cs" />
@@ -453,6 +457,7 @@
     <Content Include="Views\Home\Register.cshtml" />
     <Content Include="Views\Home\NewInvoice.cshtml" />
     <Content Include="Views\Home\InvoicePreview.cshtml" />
+    <Content Include="Views\Home\InvoiceTemplate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
