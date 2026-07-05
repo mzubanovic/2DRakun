@@ -1,0 +1,52 @@
+Upute za developera: Priprema i distribucija 2D Rakun Desktop Aplikacije
+
+Ove upute objašnjavaju kako pripremiti datoteke aplikacije za distribuciju krajnjem korisniku (npr. putem USB sticka).
+
+---
+**VAŽAN PRED-KORAK: Postavljanje kopiranja datoteka**
+---
+
+Da bi aplikacija radila samostalno, sve potrebne datoteke web projekta (View-ovi, skripte, CSS) moraju biti kopirane uz .exe datoteku. To je potrebno napraviti samo jednom.
+
+1.  U Visual Studiju, u Solution Exploreru, pronađite projekt `2DRakun`.
+2.  Označite sljedeće direktorije jedan po jedan:
+    *   `Views`
+    *   `Content`
+    *   `css`
+    *   `js`
+    *   `Scripts`
+    *   `_LogoSlike` (ako sadrži defaultne slike)
+3.  Za svaki označeni direktorij, u 'Properties' prozoru pronađite opciju **"Copy to Output Directory"**.
+4.  Promijenite vrijednost te opcije na **"Copy if newer"**.
+5.  Spremite promjene na projektu.
+
+---
+**Korak 1: Build aplikacije**
+---
+
+1.  Otvorite Visual Studio i učitajte rješenje (solution) aplikacije.
+2.  Na vrhu, promijenite konfiguraciju iz "Debug" u **"Release"**. Ovo će stvoriti optimiziranu verziju aplikacije bez nepotrebnih datoteka za debugiranje.
+3.  Desni klik na projekt **`2DRakun.Desktop.Shell`** u Solution Exploreru i odaberite **"Build"** (ili "Rebuild").
+
+---
+**Korak 2: Pronalaženje build datoteka**
+---
+
+1.  Nakon što se build uspješno završi, sve potrebne datoteke nalazit će se u sljedećem direktoriju:
+    `[Vaša putanja do projekta]\Desktop-App\2DRakun.Desktop.Shell\bin\Release`
+
+---
+**Korak 3: Kopiranje na USB stick**
+---
+
+1.  Na vašem USB sticku (ili bilo kojem drugom mediju) kreirajte novu mapu, npr. **"2D Rakun Aplikacija"**.
+2.  Otvorite `Release` direktorij iz Koraka 2.
+3.  **Kopirajte SVE datoteke i mape** iz `Release` direktorija u mapu "2D Rakun Aplikacija" na vašem USB sticku.
+
+---
+**Korak 4: Uključivanje uputa za korisnika**
+---
+
+1.  U mapu "2D Rakun Aplikacija" na USB sticku, iskopirajte i datoteku **`Upute.txt`** koju sam prethodno kreirao. Ona sadrži jednostavne upute namijenjene krajnjem korisniku.
+
+Vaš USB stick je sada spreman. Korisnik treba samo pokrenuti `2DRakun.Desktop.exe` iz mape "2D Rakun Aplikacija" prateći `Upute.txt`.

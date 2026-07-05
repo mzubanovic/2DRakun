@@ -1,0 +1,33 @@
+Upute za pokretanje aplikacije 2D Rakun Desktop
+
+Ova aplikacija omogućuje vam izradu i upravljanje predračunima direktno s vašeg računala. Ne zahtijeva internetsku vezu za rad (osim za eventualne buduće nadogradnje).
+
+Korak 1: Priprema aplikacije
+
+1.  Dobit ćete mapu pod nazivom "2DRakun-Desktop-App" (ili slično).
+2.  Kopirajte tu mapu na željeno mjesto na vašem računalu, npr. u "Dokumenti" ili na radnu površinu.
+
+Korak 2: Pokretanje aplikacije
+
+1.  Otvorite mapu "2DRakun-Desktop-App" koju ste kopirali.
+2.  Unutar te mape pronađite datoteku pod nazivom "2DRakun.Desktop.exe" (ikona će vjerojatno biti ista kao i za druge programe).
+3.  Dvostrukim klikom miša pokrenite "2DRakun.Desktop.exe".
+
+Korak 3: Prvo pokretanje (automatsko postavljanje)
+
+1.  Prilikom prvog pokretanja, aplikacija će automatski kreirati potrebnu bazu podataka na vašem računalu. Ovaj proces može potrajati nekoliko sekundi.
+2.  Ako se pojavi sigurnosno upozorenje sustava Windows (Windows Defender Firewall) vezano uz aplikaciju, odobrite joj pristup. Ovo je potrebno da bi se interni web poslužitelj mogao pokrenuti.
+
+Korak 4: Korištenje aplikacije
+
+1.  Nakon pokretanja, otvorit će se glavni prozor aplikacije.
+2.  Ako nemate korisnički račun, kliknite na poveznicu za registraciju i stvorite ga.
+3.  Nakon prijave, bit ćete preusmjereni na stranicu za kreiranje novog predračuna.
+
+Važne napomene:
+
+*   **Offline rad:** Aplikacija radi potpuno offline. Nije vam potrebna internetska veza za njezino korištenje.
+*   **Lokalni podaci:** Svi vaši podaci (korisnici, kupci, predračuni) spremaju se direktno na vaše računalo.
+*   **Sigurnosna kopija (Backup):** Preporučuje se povremeno raditi sigurnosne kopije mape "2DRakun-Desktop-App" kako biste zaštitili svoje podatke.
+
+Uživajte u korištenju aplikacije 2D Rakun!

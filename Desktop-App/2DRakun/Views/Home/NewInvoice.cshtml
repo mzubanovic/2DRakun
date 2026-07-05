@@ -1,0 +1,509 @@
+﻿@model _2DRakun.Models.ViewModels.InvoiceViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Kreiranje predračuna";
+}
+
+<div class="invoice-create shadow-sm rounded bg-white p-4" id="invoice-app">
+    <h2 class="text-center mb-4">Novi predračun</h2>
+
+    <form method="post" action="@Url.Action("PreviewInvoice", "Home")" novalidate>
+        @Html.AntiForgeryToken()
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="InvoiceNumber" class="form-label">Broj predračuna</label>
+                <input type="text" id="InvoiceNumber" name="InvoiceNumber" class="form-control" required
+                       value="@Model.InvoiceNumber" />
+            </div>
+        </div>
+
+        <h3>Podaci o kupcu</h3>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="CustomerId" class="form-label">Kupac</label>
+                <select id="CustomerId" name="CustomerId" class="form-select" required @@change="onCustomerChange">
+                    <option value="" selected>Odaberite kupca</option>
+                    @foreach (var customer in Model.ExistingCustomers)
+                    {
+                        <option value="@customer.Id"
+                                data-oib="@customer.Oib"
+                                data-name="@customer.Name"
+                                data-street="@customer.Street"
+                                data-postal="@customer.PostalCode"
+                                data-city="@customer.City"
+                                data-email="@customer.Email"
+                                data-phone="@customer.Phone">
+                            @customer.Name
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="CustomerOib" class="form-label">OIB</label>
+                <input type="text" id="CustomerOib" name="CustomerOib" class="form-control" maxlength="11" pattern="\d{11}"
+                       title="OIB mora sadržavati točno 11 znamenki" required value="@Model.CustomerOib" v-model="customer.oib"/>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="CustomerName" class="form-label">Ime i prezime / Naziv</label>
+                <input type="text" id="CustomerName" name="CustomerName" class="form-control" required
+                       value="@Model.CustomerName" v-model="customer.name"/>
+            </div>
+            <div class="col-md-6">
+                <label for="CustomerStreet" class="form-label">Ulica i broj</label>
+                <input type="text" id="CustomerStreet" name="CustomerStreet" class="form-control" required
+                       value="@Model.CustomerStreet" v-model="customer.street"/>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label for="CustomerPostalCode" class="form-label">Poštanski broj</label>
+                <input type="text" id="CustomerPostalCode" name="CustomerPostalCode" class="form-control" required
+                       value="@Model.CustomerPostalCode" v-model="customer.postalCode"/>
+            </div>
+            <div class="col-md-6">
+                <label for="CustomerCity" class="form-label">Mjesto</label>
+                <input type="text" id="CustomerCity" name="CustomerCity" class="form-control" required
+                       value="@Model.CustomerCity" v-model="customer.city"/>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label for="CustomerEmail" class="form-label">Email</label>
+                <input type="email" id="CustomerEmail" name="CustomerEmail" class="form-control" required
+                       value="@Model.CustomerEmail" v-model="customer.email"/>
+            </div>
+            <div class="col-md-6">
+                <label for="CustomerPhone" class="form-label">Telefon</label>
+                <input type="tel" id="CustomerPhone" name="CustomerPhone" class="form-control"
+                       value="@Model.CustomerPhone" v-model="customer.phone"/>
+            </div>
+        </div>
+
+        <h3>Detalji predračuna</h3>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label for="PdfFilePath" class="form-label">PDF putanja (samo za stare predračune)</label>
+                <input type="text" id="PdfFilePath" name="PdfFilePath" class="form-control"
+                       placeholder="../invoices/2025/predracun123.pdf" value="@Model.PdfFilePath" />
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="Note" class="form-label">Napomena</label>
+            <textarea id="Note" name="Note" rows="3" class="form-control">@Model.Note</textarea>
+        </div>
+
+        <hr />
+
+        <h4 class="mb-3">Stavke predračuna</h4>
+
+        <div id="invoice-items">
+            <table class="table table-bordered" id="itemsTable">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 50%;">Opis</th>
+                        <th style="width: 15%;">Jedinica</th>
+                        <th style="width: 15%;">Količina</th>
+                        <th style="width: 15%;">Cijena</th>
+                        <th style="width: 5%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in items" :key="index">
+                        <td>
+                            <input type="text" v-model="item.Description" :name="`Items[${index}].Description`" class="form-control" required />
+                        </td>
+                        <td>
+                            <input type="text" v-model="item.Unit" :name="`Items[${index}].Unit`" class="form-control" placeholder="kom, kg..." required />
+                        </td>
+                        <td>
+                            <input type="number" step="1" v-model.number="item.Quantity" :name="`Items[${index}].Quantity`" class="form-control" required @@change="calculateTotalPrice" />
+                        </td>
+                        <td>
+                            <input type="number" step="0.1" v-model.number="item.Price" :name="`Items[${index}].Price`" class="form-control" required @@change="calculateTotalPrice" />
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-danger" @@click="removeItem(index)">X</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button type="button" class="btn btn-secondary mb-4" @@click="addItem">Dodaj stavku</button>
+
+            <table class="table" style="width: 350px;">
+                <tbody>
+                    <tr>
+                        <td>Osnovica:</td>
+                        <td class="text-end">{{ totalAmountFormatted }}</td>
+                    </tr>
+                    <tr>
+                        <td>PDV (25%):</td>
+                        <td class="text-end">{{ vatAmountFormatted }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ukupno za platiti:</strong></td>
+                        <td class="text-end"><strong>{{ totalWithVatFormatted }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="Cijena_Slovima" class="form-label">Cijena slovima</label>
+                <input type="text" id="Cijena_Slovima" name="AmountTxt" class="form-control"
+                       :value="totalAmountTxt" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Pregledaj predračun</button>
+    </form>
+</div>
+
+@section Scripts {
+
+                <script>
+
+                    const { createApp } = Vue;
+
+            
+
+                    createApp({
+
+                        data() {
+
+                            return {
+
+                                items: [
+
+                                    { Description: '', Unit: '', Quantity: 1, Price: 0 }
+
+                                ],
+
+                                totalAmount: 0.0,
+
+                                customer: {
+
+                                    id: null,
+
+                                    oib: '',
+
+                                    name: '',
+
+                                    street: '',
+
+                                    postalCode: '',
+
+                                    city: '',
+
+                                    email: '',
+
+                                    phone: ''
+
+                                }
+
+                            }
+
+                        },
+
+                        computed: {
+
+                            totalAmountFormatted() {
+
+                                return this.totalAmount.toLocaleString('hr-HR', { style: 'currency', currency: 'EUR' });
+
+                            },
+
+                            vatAmount() {
+
+                                return this.totalAmount * 0.25;
+
+                            },
+
+                            vatAmountFormatted() {
+
+                                return this.vatAmount.toLocaleString('hr-HR', { style: 'currency', currency: 'EUR' });
+
+                            },
+
+                            totalWithVat() {
+
+                                return this.totalAmount + this.vatAmount;
+
+                            },
+
+                            totalWithVatFormatted() {
+
+                                return this.totalWithVat.toLocaleString('hr-HR', { style: 'currency', currency: 'EUR' });
+
+                            },
+
+                            totalAmountTxt() {
+
+                                return this.textualAmount(this.totalWithVat);
+
+                            }
+
+                        },
+
+                        methods: {
+
+                            onCustomerChange(event) {
+
+                                const select = event.target;
+
+                                const selectedOption = select.options[select.selectedIndex];
+
+            
+
+                                if (selectedOption && selectedOption.value) {
+
+                                    this.customer.id = selectedOption.value;
+
+                                    this.customer.oib = selectedOption.getAttribute('data-oib') || '';
+
+                                    this.customer.name = selectedOption.getAttribute('data-name') || '';
+
+                                    this.customer.street = selectedOption.getAttribute('data-street') || '';
+
+                                    this.customer.postalCode = selectedOption.getAttribute('data-postal') || '';
+
+                                    this.customer.city = selectedOption.getAttribute('data-city') || '';
+
+                                    this.customer.email = selectedOption.getAttribute('data-email') || '';
+
+                                    this.customer.phone = selectedOption.getAttribute('data-phone') || '';
+
+                                } else {
+
+                                    // Ako je odabran prazan (default) option, isprazni polja
+
+                                    this.customer = {
+
+                                        id: null,
+
+                                        oib: '',
+
+                                        name: '',
+
+                                        street: '',
+
+                                        postalCode: '',
+
+                                        city: '',
+
+                                        email: '',
+
+                                        phone: ''
+
+                                    };
+
+                                }
+
+                            },
+
+                            async calculateTotalPrice() {
+
+                                try {
+
+                                    const response = await fetch('/api/Api/CalculateTotalAmount', {
+
+                                        method: 'POST',
+
+                                        headers: {
+
+                                            'Content-Type': 'application/json'
+
+                                        },
+
+                                        body: JSON.stringify(this.items)
+
+                                    });
+
+            
+
+                                    if (!response.ok) {
+
+                                        const errorText = await response.text();
+
+                                        console.error('Server error:', errorText);
+
+                                        return;
+
+                                    }
+
+            
+
+                                    const data = await response.json();
+
+                                    // API vraća samo osnovicu, PDV i ostalo računamo na klijentu
+
+                                    this.totalAmount = data.res.totalAmount;
+
+            
+
+                                } catch (error) {
+
+                                    console.error('Greška prilikom izračuna:', error);
+
+                                }
+
+                            },
+
+                            addItem() {
+
+                                this.items.push({ Description: '', Unit: '', Quantity: 1, Price: 0 });
+
+                                this.calculateTotalPrice();
+
+                            },
+
+                            removeItem(index) {
+
+                                this.items.splice(index, 1);
+
+                                this.calculateTotalPrice();
+
+                            },
+
+                            onItemChange() {
+
+                                this.calculateTotalPrice();
+
+                            },
+
+                            textualAmount(iznos) {
+
+                                const jedinice = [
+
+                                    '', 'jedan', 'dva', 'tri', 'četiri', 'pet', 'šest', 'sedam', 'osam', 'devet',
+
+                                    'deset', 'jedanaest', 'dvanaest', 'trinaest', 'četrnaest', 'petnaest',
+
+                                    'šesnaest', 'sedamnaest', 'osamnaest', 'devetnaest'
+
+                                ];
+
+            
+
+                                const desetice = [
+
+                                    '', '', 'dvadeset', 'trideset', 'četrdeset', 'pedeset',
+
+                                    'šezdeset', 'sedamdeset', 'osamdeset', 'devedeset'
+
+                                ];
+
+            
+
+                                const stotine = [
+
+                                    '', 'sto', 'dvjesto', 'tristo', 'četiristo',
+
+                                    'petsto', 'šeststo', 'sedamsto', 'osamsto', 'devetsto'
+
+                                ];
+
+            
+
+                                const brojURijeci = (n) => {
+
+                                    let r = '';
+
+            
+
+                                    if (n >= 100) {
+
+                                        r += stotine[Math.floor(n / 100)];
+
+                                        n %= 100;
+
+                                    }
+
+            
+
+                                    if (n < 20) {
+
+                                        r += jedinice[n];
+
+                                    } else {
+
+                                        r += desetice[Math.floor(n / 10)] + jedinice[n % 10];
+
+                                    }
+
+            
+
+                                    return r.trim();
+
+                                };
+
+            
+
+                                const [cijeli, decimalni] = Number(iznos)
+
+                                    .toFixed(2)
+
+                                    .split('.')
+
+                                    .map(Number);
+
+            
+
+                                                    let tekst = cijeli === 0 ? 'nula' : brojURijeci(cijeli);
+
+            
+
+                                                    tekst += 'eura';
+
+            
+
+                                
+
+            
+
+                                                    if (decimalni > 0) {
+
+            
+
+                                                        tekst += 'i' + brojURijeci(decimalni) + 'centi';
+
+            
+
+                                                    }
+
+            
+
+                                                    return tekst;
+
+                            }
+
+            
+
+                        },
+
+                        mounted() {
+
+                            this.calculateTotalPrice();
+
+                        }
+
+                    }).mount('#invoice-app');
+
+            
+
+                </script>
+
+            
+
+            }

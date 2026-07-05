@@ -1,0 +1,271 @@
+﻿@model _2DRakun.Models.ViewModels.InvoiceViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Predračun @Model.InvoiceNumber</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50; /* Tamno plavo-siva */
+            --border-color: #e0e0e0;
+            --background-light: #f7f9fa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 13px;
+            color: #333;
+            margin: 0;
+            padding: 30px;
+            background-color: #fff;
+        }
+
+        .invoice-container {
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .main-title {
+            color: var(--primary-color);
+            font-size: 28px;
+            font-weight: 300;
+            text-align: right;
+            margin-bottom: 30px;
+        }
+
+        .header-container {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            margin-bottom: 30px;
+        }
+
+        .header-box {
+            display: table-cell;
+            vertical-align: top;
+        }
+
+        .logo-box {
+            width: 40%;
+        }
+
+        .company-details {
+            width: 60%;
+            text-align: right;
+        }
+
+        .company-details h3 {
+            margin: 0 0 5px 0;
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .info-container {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            margin-bottom: 30px;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+        }
+
+        .info-box {
+            display: table-cell;
+            vertical-align: top;
+        }
+
+        .info-box h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .items-table th, .items-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .items-table thead th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+        }
+        
+        .items-table .text-right {
+            text-align: right;
+        }
+
+        .totals-container {
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        .totals-table {
+            display: inline-block;
+            width: auto;
+        }
+        
+        .totals-table td {
+             padding: 8px;
+        }
+
+        .grand-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .section {
+            margin-top: 30px;
+        }
+        
+        .section h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .note-box {
+            background-color: var(--background-light);
+            padding: 15px;
+            border-radius: 5px;
+            font-style: italic;
+        }
+
+        .qr-box {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 11px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 class="main-title">PREDRAČUN @Model.InvoiceNumber</h2>
+
+    <div class="header-container">
+        <div class="header-box logo-box">
+            @if (!string.IsNullOrEmpty(Model.SellerLogoDataUri))
+            {
+                <img src="@Model.SellerLogoDataUri" alt="Logotip" style="max-height: 80px; max-width: 200px;" />
+            }
+        </div>
+        <div class="header-box company-details">
+            <h3>@Model.SellerName</h3>
+            @Model.SellerAddress<br />
+            @Model.SellerPostal @Model.SellerCity<br />
+            OIB: @Model.SellerOib
+        </div>
+    </div>
+    
+    <div class="info-container">
+        <div class="info-box">
+            <h4>Kupac</h4>
+            <strong>@Model.CustomerName</strong><br />
+            @Model.CustomerStreet<br />
+            @Model.CustomerPostalCode @Model.CustomerCity<br />
+            OIB: @Model.CustomerOib
+        </div>
+        <div class="info-box" style="text-align: right;">
+            <h4>Podaci o predračunu</h4>
+            <strong>Datum izdavanja:</strong> @Model.IssueDate.ToString("dd.MM.yyyy")<br />
+            <strong>Rok plaćanja:</strong> @Model.IssueDate.AddDays(15).ToString("dd.MM.yyyy")
+        </div>
+    </div>
+
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th style="width: 50%;">Opis</th>
+                <th>Jedinica</th>
+                <th class="text-right">Količina</th>
+                <th class="text-right">Cijena</th>
+                <th class="text-right">Ukupno</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Description</td>
+                    <td>@item.Unit</td>
+                    <td class="text-right">@item.Quantity</td>
+                    <td class="text-right">@item.Price_Print.Replace('.', ',')</td>
+                    <td class="text-right">@(((item.Quantity * item.Price).Value).ToString("F2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="totals-container">
+        <table class="totals-table">
+            <tr>
+                <td>Osnovica:</td>
+                <td class="text-right">@Model.Amount_Print.Replace('.', ',')</td>
+            </tr>
+            <tr>
+                <td>PDV (25%):</td>
+                <td class="text-right">@((Model.Amount * 0.25m).ToString("F2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
+            </tr>
+            <tr>
+                <td class="grand-total">Ukupno za platiti:</td>
+                <td class="text-right grand-total">@((Model.Amount * 1.25m).ToString("F2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
+            </tr>
+        </table>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.AmountTxt))
+    {
+        <div class="section">
+            <h4>Iznos slovima</h4>
+            @Model.AmountTxt
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Note))
+    {
+        <div class="section">
+            <h4>Napomena</h4>
+            <div class="note-box">
+                @Html.Raw(Model.Note)
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.QrCodeBase64))
+    {
+        <div class="qr-box">
+            <img src="data:image/png;base64,@Model.QrCodeBase64" />
+        </div>
+    }
+
+    <footer>
+        @Model.SellerName | OIB: @Model.SellerOib | IBAN: @Model.SellerIBAN <br />
+        Predračun je kreiran u 2DRakun aplikaciji i važeći je bez pečata i potpisa.
+    </footer>
+
+</body>
+</html>

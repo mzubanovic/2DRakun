@@ -1,0 +1,139 @@
+﻿@model _2DRakun.Models.ViewModels.InvoiceViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Pregled predračuna";
+}
+
+<div class="invoice-create shadow-sm rounded bg-white p-4">
+    <h2 class="text-center mb-4">Pregled predračuna</h2>
+
+    <h4>Osnovni podaci</h4>
+    <p><strong>Broj predračuna:</strong> @Model.InvoiceNumber</p>
+    <p>
+        <strong>Datum izdavanja:</strong> @(Model.IssueDate == DateTime.MinValue ? DateTime.Now.ToString("dd.MM.yyyy") : Model.IssueDate.ToString("dd.MM.yyyy"))
+    </p>
+
+    <hr />
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h4>Podaci o prodavatelju</h4>
+            <p><strong>Naziv:</strong> @Model.SellerName</p>
+            <p><strong>OIB:</strong> @Model.SellerOib</p>
+            <p>
+                <strong>Adresa:</strong> @Model.SellerAddress, @Model.SellerPostal @Model.SellerCity
+            </p>
+            <p><strong>IBAN:</strong> @Model.SellerIBAN</p>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.SellerLogoPath))
+        {
+            <div class="ms-4">
+                <img src="@Url.Content(Model.SellerLogoPath)" alt="Logotip" style="max-height: 100px; max-width: 200px;" />
+            </div>
+        }
+    </div>
+
+    <hr />
+
+    <h4>Podaci o kupcu</h4>
+    <p><strong>Naziv:</strong> @Model.CustomerName</p>
+    <p><strong>OIB:</strong> @Model.CustomerOib</p>
+    <p><strong>Adresa:</strong> @Model.CustomerStreet, @Model.CustomerPostalCode @Model.CustomerCity</p>
+    <p><strong>Email:</strong> @Model.CustomerEmail</p>
+    <p><strong>Telefon:</strong> @Model.CustomerPhone</p>
+
+    <hr />
+
+    <h4>Stavke predračuna</h4>
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Opis</th>
+                <th>Jedinica</th>
+                <th class="text-end">Količina</th>
+                <th class="text-end">Cijena</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Description</td>
+                    <td>@item.Unit</td>
+                    <td class="text-end">@item.Quantity</td>
+                    <td class="text-end">@item.Price_Print</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-end">
+        <table class="table" style="width: 350px; margin-left: auto;">
+            <tbody>
+                <tr>
+                    <td>Osnovica:</td>
+                    <td class="text-end">@Model.Amount_Print</td>
+                </tr>
+                <tr>
+                    <td>PDV (25%):</td>
+                    <td class="text-end">@((Model.Amount * 0.25m).ToString("N2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
+                </tr>
+                <tr>
+                    <td><strong>Ukupno za platiti:</strong></td>
+                    <td class="text-end"><strong>@((Model.Amount * 1.25m).ToString("N2", new System.Globalization.CultureInfo("hr-HR"))) €</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p>
+        <strong>Iznos slovima:</strong><br />
+        @Model.AmountTxt
+    </p>
+
+    <hr />
+
+    <h4>Napomena</h4>
+    <div class="border p-3 mb-4">
+        @Html.Raw(Model.Note)
+    </div>
+
+    <form method="post" action="@Url.Action("ConfirmInvoice", "Home")">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" name="InvoiceNumber" value="@Model.InvoiceNumber" />
+        <input type="hidden" name="PdfFilePath" value="@Model.PdfFilePath" />
+        <input type="hidden" name="Note" value="@Model.Note" />
+        <input type="hidden" name="TotalAmount" value="@Model.Amount" />
+        <input type="hidden" name="AmountTxt" value="@Model.AmountTxt" />
+        <input type="hidden" name="IssueDate" value="@Model.IssueDate" />
+
+        <input type="hidden" name="CustomerId" value="@Model.CustomerId" />
+        <input type="hidden" name="CustomerName" value="@Model.CustomerName" />
+        <input type="hidden" name="CustomerOib" value="@Model.CustomerOib" />
+        <input type="hidden" name="CustomerStreet" value="@Model.CustomerStreet" />
+        <input type="hidden" name="CustomerPostalCode" value="@Model.CustomerPostalCode" />
+        <input type="hidden" name="CustomerCity" value="@Model.CustomerCity" />
+        <input type="hidden" name="CustomerEmail" value="@Model.CustomerEmail" />
+        <input type="hidden" name="CustomerPhone" value="@Model.CustomerPhone" />       
+
+        <!-- Stavke -->
+        @for (int i = 0; i < Model.Items.Count; i++)
+        {
+            <input type="hidden" name="Items[@i].Description" value="@Model.Items[i].Description" />
+            <input type="hidden" name="Items[@i].Unit" value="@Model.Items[i].Unit" />
+            <input type="hidden" name="Items[@i].Quantity" value="@Model.Items[i].Quantity" />
+            <input type="hidden" name="Items[@i].Price" value="@Model.Items[i].Price" />
+        }
+
+        <div class="d-flex justify-content-between">
+            <a href="@Url.Action("NewInvoice", "Home")" class="btn btn-secondary">
+                Nazad
+            </a>
+
+            <button type="submit" class="btn btn-success">
+                Generiraj PDF i spremi predračun
+            </button>
+        </div>
+    </form>
+</div>

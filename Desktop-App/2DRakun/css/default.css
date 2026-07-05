@@ -1,0 +1,35 @@
+﻿body {
+    background-color: #f8f9fa;
+}
+
+.form-register {
+    max-width: 480px;
+    padding: 30px;
+    margin: 50px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+    .form-register h2 {
+        margin-bottom: 20px;
+    }
+
+.btn-primary {
+    width: 100%;
+}
+
+.text-danger {
+    font-size: 0.9rem;
+}
+
+/* Nav i footer styling */
+header nav {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+footer {
+    border-top: 1px solid #dee2e6;
+    color: #6c757d;
+}
