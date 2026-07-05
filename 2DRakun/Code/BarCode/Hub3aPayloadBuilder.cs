@@ -22,15 +22,28 @@ namespace _2DRakun.Code
         {
             var sb = new StringBuilder();
 
+            // Specifikacija zahtijeva zarez kao decimalni separator
+            // i duljinu od 15 znakova, lijevo popunjenu nulama.
+            string formattedAmount = amount.ToString("F2", CultureInfo.GetCultureInfo("hr-HR"))
+                                           .Replace(".", ",")
+                                           .PadLeft(15, '0');
+
             sb.AppendLine("HRVHUB30");
             sb.AppendLine("EUR");
-            sb.AppendLine(amount.ToString("F2", CultureInfo.InvariantCulture));
+            sb.AppendLine(formattedAmount);
+            
+            // Podaci o platitelju - mogu biti prazni
+            sb.AppendLine(""); // Ime platitelja
+            sb.AppendLine(""); // Adresa platitelja
+            sb.AppendLine(""); // Mjesto platitelja
+
+            // Podaci o primatelju
             sb.AppendLine(receiverName);
             sb.AppendLine(receiverStreet);
             sb.AppendLine(receiverCity);
-            sb.AppendLine(receiverCountry);
+            
             sb.AppendLine(receiverIban);
-            sb.AppendLine("HR" + model);
+            sb.AppendLine(model); // Model npr. HR00
             sb.AppendLine(reference);
             sb.AppendLine(description);
 

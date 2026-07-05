@@ -55,19 +55,20 @@ namespace _2DRakun.Code
         /// <param name="user">The user issuing the invoice, providing receiver information.</param>
         public static void AddPdf417BarcodeToModel(InvoiceViewModel model, decimal amount, string invoiceNumber, User user)
         {
-            string amountFormatted = amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
-            string receiverCityAndPostal = $"{user.PostalCode} {user.City}";
+            // The total amount for the barcode must include VAT.
+            var totalAmountWithVat = amount * 1.25m;
 
-            var hubPayload = string.Join(";",
-                user.CompanyName,
-                user.Street,
-                receiverCityAndPostal,
-                user.IBAN,
-                "HR",
-                amountFormatted,
-                "00",
-                invoiceNumber,
-                "Predračun " + invoiceNumber);
+            var hubPayload = Hub3aPayloadBuilder.Build(
+                receiverName: user.CompanyName,
+                receiverStreet: user.Street,
+                receiverCity: user.City,
+                receiverCountry: "HR", // Assuming Croatia
+                receiverIban: user.IBAN,
+                amount: totalAmountWithVat,
+                model: "HR00",
+                reference: invoiceNumber,
+                description: invoiceNumber // Set description to invoice number
+            );
 
             var base64Barcode = BarCodeService.GeneratePdf417BarcodeBase64(hubPayload);
             model.QrCodeBase64 = base64Barcode;

@@ -35,7 +35,7 @@ namespace _2DRakun.Models.ViewModels
         public decimal Amount => InvoiceHelper.CalculateAmount(Items);
 
         [NotMapped]
-        public string Amount_Print => Amount == 0 ? "" : Amount.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
+        public string Amount_Print => Amount == 0 ? "" : Amount.ToString("F2", CultureInfo.GetCultureInfo("hr-HR")) + " €";
 
         [NotMapped]
         public string SellerName { get; set; }
@@ -77,7 +77,7 @@ namespace _2DRakun.Models.ViewModels
             {
                 if (Price == null || Price == 0)
                     return "";
-                return Price.Value.ToString("F2", CultureInfo.GetCultureInfo("de-DE")) + " €";
+                return Price.Value.ToString("F2", CultureInfo.GetCultureInfo("hr-HR")) + " €";
             }
         }
     }
