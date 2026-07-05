@@ -12,6 +12,9 @@ namespace _2DRakun.Models.ViewModels
         public string LastName { get; set; }
         public string CompanyName { get; set; }
         public string Oib { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string PostalCode { get; set; }
         public string BankName { get; set; }
         public string IBAN { get; set; }
         public string Email { get; set; }

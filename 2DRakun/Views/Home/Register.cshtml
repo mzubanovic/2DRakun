@@ -7,7 +7,7 @@
 <div class="form-register shadow-sm rounded bg-white p-4">
     <h2 class="text-center mb-4">Registracija korisnika</h2>
 
-    <form method="post" action="@Url.Action("Register", "Home")" novalidate>
+    <form method="post" action="@Url.Action("Register", "Home")" novalidate enctype="multipart/form-data">
         @Html.AntiForgeryToken()
         <div class="mb-3">
             <label for="FirstName" class="form-label">Ime</label>
@@ -22,6 +22,11 @@
         <div class="mb-3">
             <label for="CompanyName" class="form-label">Naziv firme (nije obavezno)</label>
             <input type="text" id="CompanyName" name="CompanyName" class="form-control" placeholder="Naziv firme" />
+        </div>
+
+        <div class="mb-3">
+            <label for="logoFile" class="form-label">Logotip tvrtke (opcionalno, max 2MB)</label>
+            <input class="form-control" type="file" id="logoFile" name="logoFile" accept=".jpg,.jpeg,.png">
         </div>
 
         <div class="mb-3">

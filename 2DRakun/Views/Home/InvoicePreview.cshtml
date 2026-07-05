@@ -15,13 +15,23 @@
     </p>
 
     <hr />
-    <h4>Podaci o prodavatelju</h4>
-    <p><strong>Naziv:</strong> @Model.SellerName</p>
-    <p><strong>OIB:</strong> @Model.SellerOib</p>
-    <p>
-        <strong>Adresa:</strong> @Model.SellerAddress, @Model.SellerPostal @Model.SellerCity
-    </p>
-    <p><strong>IBAN:</strong> @Model.SellerIBAN</p>
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h4>Podaci o prodavatelju</h4>
+            <p><strong>Naziv:</strong> @Model.SellerName</p>
+            <p><strong>OIB:</strong> @Model.SellerOib</p>
+            <p>
+                <strong>Adresa:</strong> @Model.SellerAddress, @Model.SellerPostal @Model.SellerCity
+            </p>
+            <p><strong>IBAN:</strong> @Model.SellerIBAN</p>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.SellerLogoPath))
+        {
+            <div class="ms-4">
+                <img src="@Url.Content(Model.SellerLogoPath)" alt="Logotip" style="max-height: 100px; max-width: 200px;" />
+            </div>
+        }
+    </div>
 
     <hr />
 
@@ -81,6 +91,7 @@
         <input type="hidden" name="Note" value="@Model.Note" />
         <input type="hidden" name="TotalAmount" value="@Model.Amount" />
         <input type="hidden" name="AmountTxt" value="@Model.AmountTxt" />
+        <input type="hidden" name="IssueDate" value="@Model.IssueDate" />
 
         <input type="hidden" name="CustomerId" value="@Model.CustomerId" />
         <input type="hidden" name="CustomerName" value="@Model.CustomerName" />

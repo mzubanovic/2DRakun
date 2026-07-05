@@ -56,6 +56,10 @@ namespace _2DRakun.Models.ViewModels
         public string SellerPhone { get; set; }
         [NotMapped]
         public string SellerIBAN { get; set; }
+        [NotMapped]
+        public string SellerLogoPath { get; set; }
+        [NotMapped]
+        public string SellerLogoDataUri { get; set; }
 
         public string QrCodeBase64 { get; set; }
     }

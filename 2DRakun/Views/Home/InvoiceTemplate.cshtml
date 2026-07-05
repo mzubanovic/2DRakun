@@ -130,11 +130,17 @@
 
     <div class="section no-border" style="text-align:right;">
         <strong>Datum:</strong>
-        @Model.IssueDate.ToString();
+        @Model.IssueDate.ToString("dd.MM.yyyy")
     </div>
 
     <div class="seller-customer-container">
         <div class="seller-customer-box">
+            @if (!string.IsNullOrEmpty(Model.SellerLogoDataUri))
+            {
+                <div style="margin-bottom: 15px;">
+                    <img src="@Model.SellerLogoDataUri" alt="Logotip" style="max-height: 80px; max-width: 180px;" />
+                </div>
+            }
             <h4>Podaci o prodavatelju</h4>
             <table>
                 <tr><td><strong>Naziv:</strong> @Model.SellerName</td></tr>

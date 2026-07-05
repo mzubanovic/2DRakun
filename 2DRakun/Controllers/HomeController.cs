@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.IO;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
@@ -89,12 +90,15 @@ namespace _2DRakun.Controllers
 
             var user = UsersHelper.GetUserById(userid);
 
+            model.IssueDate = DateTime.Now;
+
             model.SellerName = (string.IsNullOrEmpty(user.CompanyName) ? user.FirstName + " " + user.LastName : user.CompanyName);
             model.SellerAddress = user.Street;
             model.SellerPostal = user.PostalCode;
             model.SellerCity = user.City;
             model.SellerOib = user.Oib;
             model.SellerIBAN = user.IBAN;
+            model.SellerLogoPath = user.LogoPath;
 
             var items = model.Items.Select(i => new InvoiceItem
             {
@@ -139,6 +143,19 @@ namespace _2DRakun.Controllers
             model.SellerCity = user.City;
             model.SellerOib = user.Oib;
             model.SellerIBAN = user.IBAN;
+
+            if (!string.IsNullOrEmpty(user.LogoPath))
+            {
+                var physicalPath = Server.MapPath(user.LogoPath);
+                if (System.IO.File.Exists(physicalPath))
+                {
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(physicalPath);
+                    string base64String = Convert.ToBase64String(imageBytes);
+                    string imageMimeType = MimeMapping.GetMimeMapping(physicalPath);
+                    model.SellerLogoDataUri = $"data:{imageMimeType};base64,{base64String}";
+                }
+            }
+
             InvoiceService.AddPdf417BarcodeToModel(model, amount, model.InvoiceNumber, user);
 
             //Renderiraj view u HTML string
@@ -206,7 +223,7 @@ namespace _2DRakun.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(UserViewModel model)
+        public ActionResult Register(UserViewModel model, HttpPostedFileBase logoFile)
         {
             // Basic backend checks
             if (string.IsNullOrWhiteSpace(model.Password))
@@ -233,6 +250,9 @@ namespace _2DRakun.Controllers
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 CompanyName = model.CompanyName,
+                Street = model.Street,
+                City = model.City,
+                PostalCode = model.PostalCode,
                 Oib = model.Oib,
                 BankName = model.BankName,
                 IBAN = model.IBAN,
@@ -241,6 +261,39 @@ namespace _2DRakun.Controllers
                 DateCreated = DateTime.Now,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password)
             };
+
+            if (logoFile != null && logoFile.ContentLength > 0)
+            {
+                // Validation
+                var maxFileSize = 2 * 1024 * 1024; // 2MB
+                if (logoFile.ContentLength > maxFileSize)
+                {
+                    ModelState.AddModelError("logoFile", "Datoteka je veća od 2MB.");
+                    return View(model);
+                }
+
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                var fileExtension = Path.GetExtension(logoFile.FileName).ToLower();
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    ModelState.AddModelError("logoFile", "Dozvoljeni formati su .jpg, .jpeg, .png.");
+                    return View(model);
+                }
+
+                // Save file
+                var directory = Server.MapPath("~/_LogoSlike");
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                var fileName = Guid.NewGuid().ToString() + fileExtension;
+                var path = Path.Combine(directory, fileName);
+                logoFile.SaveAs(path);
+
+                user.LogoPath = "/_LogoSlike/" + fileName;
+            }
+
 
             int newUserId = UsersHelper.CreateUser(user);
 
@@ -253,7 +306,7 @@ namespace _2DRakun.Controllers
             Session["UserId"] = newUserId;
             Session["Username"] = user.Username;
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("NewInvoice", "Home");
         }
 
     }

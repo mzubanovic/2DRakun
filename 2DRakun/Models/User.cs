@@ -51,5 +51,6 @@ namespace _2DRakun.Models
 
         [Dapper.Required]
         public string PasswordHash { get; set; }
+        public string LogoPath { get; set; }
     }
 }
