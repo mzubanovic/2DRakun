@@ -67,9 +67,24 @@
         </tbody>
     </table>
 
-    <p class="text-end">
-        <strong>Ukupno:</strong> @Model.Amount_Print
-    </p>
+    <div class="text-end">
+        <table class="table" style="width: 350px; margin-left: auto;">
+            <tbody>
+                <tr>
+                    <td>Osnovica:</td>
+                    <td class="text-end">@Model.Amount_Print</td>
+                </tr>
+                <tr>
+                    <td>PDV (25%):</td>
+                    <td class="text-end">@((Model.Amount * 0.25m).ToString("N2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
+                </tr>
+                <tr>
+                    <td><strong>Ukupno za platiti:</strong></td>
+                    <td class="text-end"><strong>@((Model.Amount * 1.25m).ToString("N2", new System.Globalization.CultureInfo("hr-HR"))) €</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <p>
         <strong>Iznos slovima:</strong><br />

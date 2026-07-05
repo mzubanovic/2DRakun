@@ -140,171 +140,370 @@
 
             <button type="button" class="btn btn-secondary mb-4" @@click="addItem">Dodaj stavku</button>
 
-            <div class="mb-3">
-                <label><strong>Ukupno: </strong></label> <span>{{ totalAmountFormatted }}</span>
-            </div>
+            <table class="table" style="width: 350px;">
+                <tbody>
+                    <tr>
+                        <td>Osnovica:</td>
+                        <td class="text-end">{{ totalAmountFormatted }}</td>
+                    </tr>
+                    <tr>
+                        <td>PDV (25%):</td>
+                        <td class="text-end">{{ vatAmountFormatted }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ukupno za platiti:</strong></td>
+                        <td class="text-end"><strong>{{ totalWithVatFormatted }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-
-
-        @*<div class="row mb-3">
+        <div class="row mb-3">
             <div class="col-md-6">
                 <label for="Cijena_Slovima" class="form-label">Cijena slovima</label>
                 <input type="text" id="Cijena_Slovima" name="AmountTxt" class="form-control"
                        :value="totalAmountTxt" />
             </div>
-        </div>*@
+        </div>
 
         <button type="submit" class="btn btn-primary">Pregledaj predračun</button>
     </form>
 </div>
 
 @section Scripts {
-    <script>
-        const { createApp } = Vue;
 
-        createApp({
-            data() {
-                return {
-                    items: [
-                        { Description: '', Unit: '', Quantity: 1, Price: 0 }
-                    ],
-                    totalAmountFormatted: '0,00 €',
-                    totalAmount: 0.0,
-                    customer: {
-                        id: null,
-                        oib: '',
-                        name: '',
-                        street: '',
-                        postalCode: '',
-                        city: '',
-                        email: '',
-                        phone: ''
-                    }
-                }
-            },
-            computed: {
-                totalAmountTxt() {
-                    return this.textualAmount(this.totalAmount);
-                }
-            },
-            methods: {
-                onCustomerChange(event) {
-                    const select = event.target;
-                    const selectedOption = select.options[select.selectedIndex];
+                <script>
 
-                    if (selectedOption && selectedOption.value) {
-                        this.customer.id = selectedOption.value;
-                        this.customer.oib = selectedOption.getAttribute('data-oib') || '';
-                        this.customer.name = selectedOption.getAttribute('data-name') || '';
-                        this.customer.street = selectedOption.getAttribute('data-street') || '';
-                        this.customer.postalCode = selectedOption.getAttribute('data-postal') || '';
-                        this.customer.city = selectedOption.getAttribute('data-city') || '';
-                        this.customer.email = selectedOption.getAttribute('data-email') || '';
-                        this.customer.phone = selectedOption.getAttribute('data-phone') || '';
-                    } else {
-                        // Ako je odabran prazan (default) option, isprazni polja
-                        this.customer = {
-                            id: null,
-                            oib: '',
-                            name: '',
-                            street: '',
-                            postalCode: '',
-                            city: '',
-                            email: '',
-                            phone: ''
-                        };
-                    }
-                },
-                async calculateTotalPrice() {
-                    try {
-                        const response = await fetch('/api/Api/CalculateTotalAmount', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
+                    const { createApp } = Vue;
+
+            
+
+                    createApp({
+
+                        data() {
+
+                            return {
+
+                                items: [
+
+                                    { Description: '', Unit: '', Quantity: 1, Price: 0 }
+
+                                ],
+
+                                totalAmount: 0.0,
+
+                                customer: {
+
+                                    id: null,
+
+                                    oib: '',
+
+                                    name: '',
+
+                                    street: '',
+
+                                    postalCode: '',
+
+                                    city: '',
+
+                                    email: '',
+
+                                    phone: ''
+
+                                }
+
+                            }
+
+                        },
+
+                        computed: {
+
+                            totalAmountFormatted() {
+
+                                return this.totalAmount.toLocaleString('hr-HR', { style: 'currency', currency: 'EUR' });
+
                             },
-                            body: JSON.stringify(this.items)
-                        });
 
-                        if (!response.ok) {
-                            const errorText = await response.text();
-                            console.error('Server error:', errorText);
-                            return;
+                            vatAmount() {
+
+                                return this.totalAmount * 0.25;
+
+                            },
+
+                            vatAmountFormatted() {
+
+                                return this.vatAmount.toLocaleString('hr-HR', { style: 'currency', currency: 'EUR' });
+
+                            },
+
+                            totalWithVat() {
+
+                                return this.totalAmount + this.vatAmount;
+
+                            },
+
+                            totalWithVatFormatted() {
+
+                                return this.totalWithVat.toLocaleString('hr-HR', { style: 'currency', currency: 'EUR' });
+
+                            },
+
+                            totalAmountTxt() {
+
+                                return this.textualAmount(this.totalWithVat);
+
+                            }
+
+                        },
+
+                        methods: {
+
+                            onCustomerChange(event) {
+
+                                const select = event.target;
+
+                                const selectedOption = select.options[select.selectedIndex];
+
+            
+
+                                if (selectedOption && selectedOption.value) {
+
+                                    this.customer.id = selectedOption.value;
+
+                                    this.customer.oib = selectedOption.getAttribute('data-oib') || '';
+
+                                    this.customer.name = selectedOption.getAttribute('data-name') || '';
+
+                                    this.customer.street = selectedOption.getAttribute('data-street') || '';
+
+                                    this.customer.postalCode = selectedOption.getAttribute('data-postal') || '';
+
+                                    this.customer.city = selectedOption.getAttribute('data-city') || '';
+
+                                    this.customer.email = selectedOption.getAttribute('data-email') || '';
+
+                                    this.customer.phone = selectedOption.getAttribute('data-phone') || '';
+
+                                } else {
+
+                                    // Ako je odabran prazan (default) option, isprazni polja
+
+                                    this.customer = {
+
+                                        id: null,
+
+                                        oib: '',
+
+                                        name: '',
+
+                                        street: '',
+
+                                        postalCode: '',
+
+                                        city: '',
+
+                                        email: '',
+
+                                        phone: ''
+
+                                    };
+
+                                }
+
+                            },
+
+                            async calculateTotalPrice() {
+
+                                try {
+
+                                    const response = await fetch('/api/Api/CalculateTotalAmount', {
+
+                                        method: 'POST',
+
+                                        headers: {
+
+                                            'Content-Type': 'application/json'
+
+                                        },
+
+                                        body: JSON.stringify(this.items)
+
+                                    });
+
+            
+
+                                    if (!response.ok) {
+
+                                        const errorText = await response.text();
+
+                                        console.error('Server error:', errorText);
+
+                                        return;
+
+                                    }
+
+            
+
+                                    const data = await response.json();
+
+                                    // API vraća samo osnovicu, PDV i ostalo računamo na klijentu
+
+                                    this.totalAmount = data.res.totalAmount;
+
+            
+
+                                } catch (error) {
+
+                                    console.error('Greška prilikom izračuna:', error);
+
+                                }
+
+                            },
+
+                            addItem() {
+
+                                this.items.push({ Description: '', Unit: '', Quantity: 1, Price: 0 });
+
+                                this.calculateTotalPrice();
+
+                            },
+
+                            removeItem(index) {
+
+                                this.items.splice(index, 1);
+
+                                this.calculateTotalPrice();
+
+                            },
+
+                            onItemChange() {
+
+                                this.calculateTotalPrice();
+
+                            },
+
+                            textualAmount(iznos) {
+
+                                const jedinice = [
+
+                                    '', 'jedan', 'dva', 'tri', 'četiri', 'pet', 'šest', 'sedam', 'osam', 'devet',
+
+                                    'deset', 'jedanaest', 'dvanaest', 'trinaest', 'četrnaest', 'petnaest',
+
+                                    'šesnaest', 'sedamnaest', 'osamnaest', 'devetnaest'
+
+                                ];
+
+            
+
+                                const desetice = [
+
+                                    '', '', 'dvadeset', 'trideset', 'četrdeset', 'pedeset',
+
+                                    'šezdeset', 'sedamdeset', 'osamdeset', 'devedeset'
+
+                                ];
+
+            
+
+                                const stotine = [
+
+                                    '', 'sto', 'dvjesto', 'tristo', 'četiristo',
+
+                                    'petsto', 'šeststo', 'sedamsto', 'osamsto', 'devetsto'
+
+                                ];
+
+            
+
+                                const brojURijeci = (n) => {
+
+                                    let r = '';
+
+            
+
+                                    if (n >= 100) {
+
+                                        r += stotine[Math.floor(n / 100)];
+
+                                        n %= 100;
+
+                                    }
+
+            
+
+                                    if (n < 20) {
+
+                                        r += jedinice[n];
+
+                                    } else {
+
+                                        r += desetice[Math.floor(n / 10)] + jedinice[n % 10];
+
+                                    }
+
+            
+
+                                    return r.trim();
+
+                                };
+
+            
+
+                                const [cijeli, decimalni] = Number(iznos)
+
+                                    .toFixed(2)
+
+                                    .split('.')
+
+                                    .map(Number);
+
+            
+
+                                                    let tekst = cijeli === 0 ? 'nula' : brojURijeci(cijeli);
+
+            
+
+                                                    tekst += 'eura';
+
+            
+
+                                
+
+            
+
+                                                    if (decimalni > 0) {
+
+            
+
+                                                        tekst += 'i' + brojURijeci(decimalni) + 'centi';
+
+            
+
+                                                    }
+
+            
+
+                                                    return tekst;
+
+                            }
+
+            
+
+                        },
+
+                        mounted() {
+
+                            this.calculateTotalPrice();
+
                         }
 
-                        const data = await response.json();
-                        this.totalAmountFormatted = data.res.totalAmountFormatted;
-                        this.totalAmount = data.res.totalAmount;                   
+                    }).mount('#invoice-app');
 
-                    } catch (error) {
-                        console.error('Greška prilikom izračuna:', error);
-                    }
-                },
-                addItem() {
-                    this.items.push({ Description: '', Unit: '', Quantity: 1, Price: 0 });
-                    this.calculateTotalPrice();
-                },
-                removeItem(index) {
-                    this.items.splice(index, 1);
-                    this.calculateTotalPrice();
-                },
-                onItemChange() {
-                    this.calculateTotalPrice();
-                },
-                textualAmount(iznos) {
-                    const jedinice = [
-                        '', 'jedan', 'dva', 'tri', 'četiri', 'pet', 'šest', 'sedam', 'osam', 'devet',
-                        'deset', 'jedanaest', 'dvanaest', 'trinaest', 'četrnaest', 'petnaest',
-                        'šesnaest', 'sedamnaest', 'osamnaest', 'devetnaest'
-                    ];
+            
 
-                    const desetice = [
-                        '', '', 'dvadeset', 'trideset', 'četrdeset', 'pedeset',
-                        'šezdeset', 'sedamdeset', 'osamdeset', 'devedeset'
-                    ];
+                </script>
 
-                    const stotine = [
-                        '', 'sto', 'dvjesto', 'tristo', 'četiristo',
-                        'petsto', 'šeststo', 'sedamsto', 'osamsto', 'devetsto'
-                    ];
+            
 
-                    const brojURijeci = (n) => {
-                        let r = '';
-
-                        if (n >= 100) {
-                            r += stotine[Math.floor(n / 100)];
-                            n %= 100;
-                        }
-
-                        if (n < 20) {
-                            r += jedinice[n];
-                        } else {
-                            r += desetice[Math.floor(n / 10)]  + jedinice[n % 10];
-                        }
-
-                        return r.trim();
-                    };
-
-                    const [cijeli, decimalni] = Number(iznos)
-                        .toFixed(2)
-                        .split('.')
-                        .map(Number);
-
-                    let tekst = cijeli === 0 ? 'nula' : brojURijeci(cijeli);
-                    tekst += 'eura';
-
-                    if (decimalni > 0) {
-                        tekst += 'i' + brojURijeci(decimalni) + 'centi';
-                    }
-                    return tekst;
-                }
-
-            },
-            mounted() {
-                this.calculateTotalPrice();
             }
-        }).mount('#invoice-app');
-
-    </script>
-
-}
