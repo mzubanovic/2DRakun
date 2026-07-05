@@ -62,11 +62,11 @@ namespace _2DRakun.Code
                 receiverName: user.CompanyName,
                 receiverStreet: user.Street,
                 receiverCity: user.City,
-                receiverCountry: "HR", // Assuming Croatia
                 receiverIban: user.IBAN,
                 amount: totalAmountWithVat,
                 model: "HR00",
                 reference: invoiceNumber,
+                purposeCode: "OTHR", // Add purpose code
                 description: invoiceNumber // Set description to invoice number
             );
 

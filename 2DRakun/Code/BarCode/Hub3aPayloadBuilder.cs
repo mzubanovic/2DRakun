@@ -13,11 +13,11 @@ namespace _2DRakun.Code
             string receiverName,
             string receiverStreet,
             string receiverCity,
-            string receiverCountry,
             string receiverIban,
             decimal amount,
             string model,
             string reference,
+            string purposeCode,
             string description)
         {
             var sb = new StringBuilder();
@@ -45,6 +45,7 @@ namespace _2DRakun.Code
             sb.AppendLine(receiverIban);
             sb.AppendLine(model); // Model npr. HR00
             sb.AppendLine(reference);
+            sb.AppendLine(purposeCode); // Šifra namjene, npr. OTHR
             sb.AppendLine(description);
 
             return sb.ToString();
