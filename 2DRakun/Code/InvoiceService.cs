@@ -67,7 +67,7 @@ namespace _2DRakun.Code
                 amountFormatted,
                 "00",
                 invoiceNumber,
-                "Račun " + invoiceNumber);
+                "Predračun " + invoiceNumber);
 
             var base64Barcode = BarCodeService.GeneratePdf417BarcodeBase64(hubPayload);
             model.QrCodeBase64 = base64Barcode;

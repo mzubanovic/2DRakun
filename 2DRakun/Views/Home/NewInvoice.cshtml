@@ -2,18 +2,18 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Kreiranje računa";
+    ViewBag.Title = "Kreiranje predračuna";
 }
 
 <div class="invoice-create shadow-sm rounded bg-white p-4" id="invoice-app">
-    <h2 class="text-center mb-4">Novi račun</h2>
+    <h2 class="text-center mb-4">Novi predračun</h2>
 
     <form method="post" action="@Url.Action("PreviewInvoice", "Home")" novalidate>
         @Html.AntiForgeryToken()
 
         <div class="row mb-3">
             <div class="col-md-6">
-                <label for="InvoiceNumber" class="form-label">Broj računa</label>
+                <label for="InvoiceNumber" class="form-label">Broj predračuna</label>
                 <input type="text" id="InvoiceNumber" name="InvoiceNumber" class="form-control" required
                        value="@Model.InvoiceNumber" />
             </div>
@@ -87,13 +87,13 @@
             </div>
         </div>
 
-        <h3>Detalji računa</h3>
+        <h3>Detalji predračuna</h3>
 
         <div class="row mb-3">
             <div class="col-md-12">
-                <label for="PdfFilePath" class="form-label">PDF putanja (samo za stare račune)</label>
+                <label for="PdfFilePath" class="form-label">PDF putanja (samo za stare predračune)</label>
                 <input type="text" id="PdfFilePath" name="PdfFilePath" class="form-control"
-                       placeholder="../invoices/2025/račun123.pdf" value="@Model.PdfFilePath" />
+                       placeholder="../invoices/2025/predracun123.pdf" value="@Model.PdfFilePath" />
             </div>
         </div>
 
@@ -104,7 +104,7 @@
 
         <hr />
 
-        <h4 class="mb-3">Stavke računa</h4>
+        <h4 class="mb-3">Stavke predračuna</h4>
 
         <div id="invoice-items">
             <table class="table table-bordered" id="itemsTable">
@@ -155,7 +155,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Pregledaj račun</button>
+        <button type="submit" class="btn btn-primary">Pregledaj predračun</button>
     </form>
 </div>
 

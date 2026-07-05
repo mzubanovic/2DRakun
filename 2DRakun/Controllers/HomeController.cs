@@ -77,7 +77,7 @@ namespace _2DRakun.Controllers
         {
             if (!ModelState.IsValid || model.Items == null || !model.Items.Any())
             {
-                ModelState.AddModelError("", "Račun mora sadržavati barem jednu stavku.");
+                ModelState.AddModelError("", "Predračun mora sadržavati barem jednu stavku.");
                 return View("NewInvoice", model);
             }
 
@@ -127,7 +127,7 @@ namespace _2DRakun.Controllers
 
             var amount = InvoiceHelper.CalculateAmount(items);
 
-            model.Note += "<br><br>Račun je izdan u elektroničkom obliku i važeći je bez pečata i potpisa";
+            model.Note += "<br><br>Predračun je izdan u elektroničkom obliku i važeći je bez pečata i potpisa";
 
             var user = UsersHelper.GetUserById(cUserId);
             if (user == null) {

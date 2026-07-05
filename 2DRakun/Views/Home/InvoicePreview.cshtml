@@ -2,14 +2,14 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Pregled računa";
+    ViewBag.Title = "Pregled predračuna";
 }
 
 <div class="invoice-create shadow-sm rounded bg-white p-4">
-    <h2 class="text-center mb-4">Pregled računa</h2>
+    <h2 class="text-center mb-4">Pregled predračuna</h2>
 
     <h4>Osnovni podaci</h4>
-    <p><strong>Broj računa:</strong> @Model.InvoiceNumber</p>
+    <p><strong>Broj predračuna:</strong> @Model.InvoiceNumber</p>
     <p>
         <strong>Datum izdavanja:</strong> @(Model.IssueDate == DateTime.MinValue ? DateTime.Now.ToString("dd.MM.yyyy") : Model.IssueDate.ToString("dd.MM.yyyy"))
     </p>
@@ -34,7 +34,7 @@
 
     <hr />
 
-    <h4>Stavke računa</h4>
+    <h4>Stavke predračuna</h4>
     <table class="table table-bordered">
         <thead class="table-light">
             <tr>
@@ -106,7 +106,7 @@
             </a>
 
             <button type="submit" class="btn btn-success">
-                Generiraj PDF i spremi račun
+                Generiraj PDF i spremi predračun
             </button>
         </div>
     </form>
