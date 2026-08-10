@@ -224,15 +224,15 @@
         <table class="totals-table">
             <tr>
                 <td>Osnovica:</td>
-                <td class="text-right">@Model.Amount_Print.Replace('.', ',')</td>
+                <td class="text-right">@((Model.Amount / 1.25m).ToString("N2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
             </tr>
             <tr>
                 <td>PDV (25%):</td>
-                <td class="text-right">@((Model.Amount * 0.25m).ToString("F2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
+                <td class="text-right">@((Model.Amount - (Model.Amount / 1.25m)).ToString("N2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
             </tr>
             <tr>
                 <td class="grand-total">Ukupno za platiti:</td>
-                <td class="text-right grand-total">@((Model.Amount * 1.25m).ToString("F2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
+                <td class="text-right grand-total">@Model.Amount_Print</td>
             </tr>
         </table>
     </div>

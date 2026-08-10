@@ -166,9 +166,8 @@ namespace _2DRakun.Controllers
 
             //Generiraj PDF iz HTML stringa
             var pdfBytes = PdfHelper.GeneratePdfFromHtml(htmlContent);
-
             //Spremi PDF na disk ili vrati kao FileResult
-            var invoiceName = $"Invoice_{model.InvoiceNumber}_{DateTime.Now.ToString("dd-MM-yyyy")}.pdf";
+            var invoiceName = $"Predracun_{model.InvoiceNumber}_{DateTime.Now.ToString("dd-MM-yyyy")}_{Guid.NewGuid():N}.pdf";
             string pdfPath = Server.MapPath($"~/Documents/Invoices/{invoiceName}");
             System.IO.File.WriteAllBytes(pdfPath, pdfBytes);
 

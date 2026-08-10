@@ -56,7 +56,7 @@ namespace _2DRakun.Code
         public static void AddPdf417BarcodeToModel(InvoiceViewModel model, decimal amount, string invoiceNumber, User user)
         {
             // The total amount for the barcode must include VAT.
-            var totalAmountWithVat = amount * 1.25m;
+            var totalAmountWithVat = amount;
 
             var hubPayload = Hub3aPayloadBuilder.Build(
                 receiverName: user.CompanyName,
@@ -67,7 +67,7 @@ namespace _2DRakun.Code
                 model: "HR00",
                 reference: invoiceNumber,
                 purposeCode: "OTHR", // Add purpose code
-                description: invoiceNumber // Set description to invoice number
+                description: "predračun " + invoiceNumber // Set description to invoice number
             );
 
             var base64Barcode = BarCodeService.GeneratePdf417BarcodeBase64(hubPayload);
