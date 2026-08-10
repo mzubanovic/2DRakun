@@ -144,7 +144,7 @@
                 <tbody>
                     <tr>
                         <td>Osnovica:</td>
-                        <td class="text-end">{{ totalAmountFormatted }}</td>
+                        <td class="text-end">{{ totalWithoutVatFormatted }}</td>
                     </tr>
                     <tr>
                         <td>PDV (25%):</td>
@@ -152,7 +152,7 @@
                     </tr>
                     <tr>
                         <td><strong>Ukupno za platiti:</strong></td>
-                        <td class="text-end"><strong>{{ totalWithVatFormatted }}</strong></td>
+                        <td class="text-end"><strong>{{ totalAmountFormatted }}</strong></td>
                     </tr>
                 </tbody>
             </table>
@@ -226,7 +226,7 @@
 
                             vatAmount() {
 
-                                return this.totalAmount * 0.25;
+                                return this.totalAmount - (this.totalAmount / 1.25);
 
                             },
 
@@ -236,21 +236,21 @@
 
                             },
 
-                            totalWithVat() {
+                            totalWithoutVat() {
 
-                                return this.totalAmount + this.vatAmount;
+                                return this.totalAmount - this.vatAmount;
 
                             },
 
-                            totalWithVatFormatted() {
+                            totalWithoutVatFormatted() {
 
-                                return this.totalWithVat.toLocaleString('hr-HR', { style: 'currency', currency: 'EUR' });
+                                return this.totalWithoutVat.toLocaleString('hr-HR', { style: 'currency', currency: 'EUR' });
 
                             },
 
                             totalAmountTxt() {
 
-                                return this.textualAmount(this.totalWithVat);
+                                return this.textualAmount(this.totalAmount);
 
                             }
 

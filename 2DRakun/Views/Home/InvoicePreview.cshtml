@@ -72,15 +72,15 @@
             <tbody>
                 <tr>
                     <td>Osnovica:</td>
-                    <td class="text-end">@Model.Amount_Print</td>
+                    <td class="text-end">@((Model.Amount / 1.25m).ToString("N2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
                 </tr>
                 <tr>
                     <td>PDV (25%):</td>
-                    <td class="text-end">@((Model.Amount * 0.25m).ToString("N2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
+                    <td class="text-end">@((Model.Amount - (Model.Amount / 1.25m)).ToString("N2", new System.Globalization.CultureInfo("hr-HR"))) €</td>
                 </tr>
                 <tr>
                     <td><strong>Ukupno za platiti:</strong></td>
-                    <td class="text-end"><strong>@((Model.Amount * 1.25m).ToString("N2", new System.Globalization.CultureInfo("hr-HR"))) €</strong></td>
+                    <td class="text-end"><strong>@Model.Amount_Print</strong></td>
                 </tr>
             </tbody>
         </table>
