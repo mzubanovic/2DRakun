@@ -264,7 +264,7 @@
 
                                 const selectedOption = select.options[select.selectedIndex];
 
-            
+
 
                                 if (selectedOption && selectedOption.value) {
 
@@ -330,7 +330,7 @@
 
                                     });
 
-            
+
 
                                     if (!response.ok) {
 
@@ -342,7 +342,7 @@
 
                                     }
 
-            
+
 
                                     const data = await response.json();
 
@@ -350,7 +350,7 @@
 
                                     this.totalAmount = data.res.totalAmount;
 
-            
+
 
                                 } catch (error) {
 
@@ -383,115 +383,111 @@
                             },
 
                             textualAmount(iznos) {
-
                                 const jedinice = [
-
-                                    '', 'jedan', 'dva', 'tri', 'četiri', 'pet', 'šest', 'sedam', 'osam', 'devet',
-
-                                    'deset', 'jedanaest', 'dvanaest', 'trinaest', 'četrnaest', 'petnaest',
-
-                                    'šesnaest', 'sedamnaest', 'osamnaest', 'devetnaest'
-
+                                    '', 'jedan', 'dva', 'tri', 'četiri', 'pet',
+                                    'šest', 'sedam', 'osam', 'devet', 'deset',
+                                    'jedanaest', 'dvanaest', 'trinaest', 'četrnaest',
+                                    'petnaest', 'šesnaest', 'sedamnaest', 'osamnaest', 'devetnaest'
                                 ];
-
-            
 
                                 const desetice = [
-
-                                    '', '', 'dvadeset', 'trideset', 'četrdeset', 'pedeset',
-
-                                    'šezdeset', 'sedamdeset', 'osamdeset', 'devedeset'
-
+                                    '', '', 'dvadeset', 'trideset', 'četrdeset',
+                                    'pedeset', 'šezdeset', 'sedamdeset',
+                                    'osamdeset', 'devedeset'
                                 ];
 
-            
+                                function brojDo999(n) {
+                                    if (n === 0) return '';
 
-                                const stotine = [
-
-                                    '', 'sto', 'dvjesto', 'tristo', 'četiristo',
-
-                                    'petsto', 'šeststo', 'sedamsto', 'osamsto', 'devetsto'
-
-                                ];
-
-            
-
-                                const brojURijeci = (n) => {
-
-                                    let r = '';
-
-            
+                                    let tekst = '';
 
                                     if (n >= 100) {
+                                        const stotine = [
+                                            '', 'sto', 'dvjesto', 'tristo', 'četiristo',
+                                            'petsto', 'šeststo', 'sedamsto', 'osamsto', 'devetsto'
+                                        ];
 
-                                        r += stotine[Math.floor(n / 100)];
-
+                                        tekst += stotine[Math.floor(n / 100)];
                                         n %= 100;
 
+                                        if (n > 0) tekst += ' ';
                                     }
-
-            
 
                                     if (n < 20) {
-
-                                        r += jedinice[n];
-
+                                        tekst += jedinice[n];
                                     } else {
+                                        tekst += desetice[Math.floor(n / 10)];
 
-                                        r += desetice[Math.floor(n / 10)] + jedinice[n % 10];
-
+                                        if (n % 10 > 0) {
+                                            tekst += ' ' + jedinice[n % 10];
+                                        }
                                     }
 
-            
+                                    return tekst.trim();
+                                }
 
-                                    return r.trim();
+                                function tekstTisuca(n) {
+                                    if (n === 0) return '';
 
-                                };
+                                    let tekst = '';
 
-            
+                                    if (n === 1) {
+                                        return 'tisuću';
+                                    }
 
-                                const [cijeli, decimalni] = Number(iznos)
+                                    if (n >= 1000) {
+                                        const tisuce = Math.floor(n / 1000);
+                                        const ostatak = n % 1000;
 
-                                    .toFixed(2)
+                                        if (tisuce === 1) {
+                                            tekst = 'tisuću';
+                                        } else if (tisuce % 100 === 1 && tisuce % 1000 !== 11) {
+                                            tekst = brojDo999(tisuce - 1) + ' tisuću';
+                                        } else if (
+                                            tisuce % 100 === 2 &&
+                                            tisuce % 1000 !== 12
+                                        ) {
+                                            tekst = brojDo999(tisuce - 2) + ' dvije tisuće';
+                                        } else {
+                                            tekst = brojDo999(tisuce) + ' tisuća';
+                                        }
 
-                                    .split('.')
+                                        if (ostatak > 0) {
+                                            tekst += ' ' + brojDo999(ostatak);
+                                        }
 
-                                    .map(Number);
+                                        return tekst.trim();
+                                    }
 
-            
+                                    return brojDo999(n);
+                                }
 
-                                                    let tekst = cijeli === 0 ? 'nula' : brojURijeci(cijeli);
+                                const broj = Number(iznos);
 
-            
+                                if (!Number.isFinite(broj)) {
+                                    return '';
+                                }
 
-                                                    tekst += 'eura';
+                                const zaokruzeni = Math.round((broj + Number.EPSILON) * 100) / 100;
 
-            
+                                const cijeli = Math.floor(zaokruzeni);
+                                const decimalni = Math.round((zaokruzeni - cijeli) * 100);
 
-                                
+                                let tekst = '';
 
-            
+                                if (cijeli === 0) {
+                                    tekst = 'nula eura';
+                                } else {
+                                    tekst = tekstTisuca(cijeli) + ' eura';
+                                }
 
-                                                    if (decimalni > 0) {
+                                if (decimalni > 0) {
+                                    tekst += ' i ' + brojDo999(decimalni) + ' centi';
+                                }
 
-            
-
-                                                        tekst += 'i' + brojURijeci(decimalni) + 'centi';
-
-            
-
-                                                    }
-
-            
-
-                                                    return tekst;
-
+                                return tekst;
                             }
-
-            
-
                         },
-
                         mounted() {
 
                             this.calculateTotalPrice();
